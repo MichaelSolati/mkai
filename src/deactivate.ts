@@ -1,0 +1,72 @@
+import { removeActivation, readState } from "./state.js";
+import { restoreOriginal, stashSkillConfig } from "./stash.js";
+import { removeSymlink, isSymlink } from "./symlink.js";
+import type { Target } from "./types.js";
+
+export interface DeactivateResult {
+  success: boolean;
+  linksRemoved: number;
+  restored: number;
+  errors: string[];
+}
+
+export async function deactivateProfile(
+  profileName: string,
+  target: Target,
+  options: { dryRun?: boolean } = {},
+): Promise<DeactivateResult> {
+  const result: DeactivateResult = { success: true, linksRemoved: 0, restored: 0, errors: [] };
+
+  const projectPath = target.kind === "project" ? target.projectPath : undefined;
+  const activation = await removeActivation(profileName, target.kind, projectPath);
+
+  if (!activation) {
+    return { success: false, linksRemoved: 0, restored: 0, errors: [`Profile "${profileName}" is not active`] };
+  }
+
+  if (options.dryRun) {
+    return { success: true, linksRemoved: activation.links.length, restored: activation.links.filter((l) => l.overrode).length, errors: [] };
+  }
+
+  for (const link of activation.links) {
+    try {
+      if (link.type === "skill") {
+        await stashSkillConfig(link.destination, link.name);
+      }
+
+      if (await isSymlink(link.destination)) {
+        await removeSymlink(link.destination);
+        result.linksRemoved++;
+      }
+
+      if (link.overrode) {
+        await restoreOriginal(link.overrode, link.destination);
+        result.restored++;
+      }
+    } catch (err) {
+      result.errors.push(`Failed to remove ${link.name}: ${err instanceof Error ? err.message : String(err)}`);
+    }
+  }
+
+  if (result.errors.length > 0) result.success = false;
+  return result;
+}
+
+export async function deactivateAll(options: { dryRun?: boolean } = {}): Promise<DeactivateResult> {
+  const state = await readState();
+  const combined: DeactivateResult = { success: true, linksRemoved: 0, restored: 0, errors: [] };
+
+  for (const activation of [...state.activations]) {
+    const target: Target = activation.target === "project" && activation.projectPath
+      ? { kind: "project", projectPath: activation.projectPath }
+      : { kind: "global" };
+
+    const result = await deactivateProfile(activation.profile, target, options);
+    combined.linksRemoved += result.linksRemoved;
+    combined.restored += result.restored;
+    combined.errors.push(...result.errors);
+    if (!result.success) combined.success = false;
+  }
+
+  return combined;
+}
