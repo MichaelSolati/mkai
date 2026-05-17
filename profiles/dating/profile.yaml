@@ -1,0 +1,13 @@
+name: dating
+description: Research-backed dating profile optimization and messaging grounded in signaling theory, behavioral research, and platform data
+tags: [dating, hinge, bumble, tinder, profile, optimization, messaging, relationships]
+
+agents: []
+commands: []
+skills:
+  - hinge-profile-optimizer
+  - match-tracker
+  - message-crafter
+
+requires: []
+conflicts: []
