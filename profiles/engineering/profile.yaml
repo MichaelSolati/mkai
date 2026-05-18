@@ -1,0 +1,20 @@
+name: engineering
+description: TDD, debugging, architecture improvement, and disciplined development workflows
+tags: [engineering, tdd, debugging, architecture]
+
+agents: []
+
+commands:
+  - clean-history.md
+  - context-prime.md
+  - focused-fix.md
+  - optimize.md
+
+skills:
+  - diagnose
+  - improve-architecture
+  - prototype
+  - tdd
+
+requires: []
+conflicts: []
