@@ -1,0 +1,14 @@
+name: flutter
+description: Flutter/Dart development - testing patterns and OWASP mobile security scanning
+tags: [flutter, dart, mobile, testing, security]
+
+agents: []
+
+commands: []
+
+skills:
+  - flutter-security
+  - flutter-tester
+
+requires: []
+conflicts: []
