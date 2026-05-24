@@ -1,0 +1,16 @@
+name: marketing
+description: CRO, copywriting, cold email, pricing strategy, and growth skills
+tags: [marketing, cro, copywriting, email, pricing, growth]
+
+agents: []
+
+commands: []
+
+skills:
+  - cold-email
+  - copywriting
+  - cro
+  - pricing
+
+requires: []
+conflicts: []
