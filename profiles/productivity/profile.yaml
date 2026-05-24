@@ -1,0 +1,21 @@
+name: productivity
+description: Meta-skills for working with Claude - prompt engineering, handoffs, issue management, PRDs
+tags: [productivity, prompts, issues, prd, handoff]
+
+agents: []
+
+commands:
+  - create-prd.md
+  - todo.md
+  - update-docs.md
+
+skills:
+  - handoff
+  - prompt-master
+  - to-issues
+  - to-prd
+  - triage
+  - write-a-skill
+
+requires: []
+conflicts: []
