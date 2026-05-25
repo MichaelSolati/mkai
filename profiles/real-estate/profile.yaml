@@ -1,0 +1,32 @@
+name: real-estate
+description: Property analysis, listing evaluation, market research, investment analysis, and client management
+tags: [real-estate, property, investment, market-analysis, listings]
+
+agents:
+  - financial-analyst.md
+  - location-analyst.md
+  - market-analyst.md
+  - property-evaluator.md
+  - rental-analyst.md
+
+commands: []
+
+skills:
+  - client-memory
+  - comp-crusher
+  - cyclsales-connect
+  - investment-analyzer
+  - lead-recon
+  - listing-arsenal
+  - listing-presentation
+  - market-intel
+  - neighborhood-dominator
+  - nurture-coach
+  - open-house-machine
+  - prospector
+  - review-engine
+  - sphere-engine
+  - start-here
+
+requires: []
+conflicts: []
