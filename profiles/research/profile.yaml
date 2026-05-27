@@ -1,0 +1,19 @@
+name: research
+description: Academic paper writing, deep research, literature review, and synthesis pipelines
+tags: [research, academic, papers, literature-review]
+
+agents:
+  - report-compiler.md
+  - research-architect.md
+  - synthesis.md
+
+commands:
+  - deep-research.md
+  - paper-review.md
+
+skills:
+  - academic-paper
+  - deep-research
+
+requires: []
+conflicts: []
