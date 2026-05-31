@@ -1,0 +1,13 @@
+name: site-cloner
+description: Reverse-engineer any website into Next.js using chrome-devtools for page inspection and parallel builder agents
+tags: [cloning, reverse-engineering, nextjs, web-scraping]
+
+agents: []
+
+commands: []
+
+skills:
+  - clone-website
+
+requires: []
+conflicts: []
