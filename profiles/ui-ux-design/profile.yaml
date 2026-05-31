@@ -1,0 +1,26 @@
+name: ui-ux-design
+description: App design, social media platforms, magazine layouts, editorial design, and anti-AI-slop rules
+tags: [design, ui, ux, frontend, editorial, anti-slop, brand, slides, tokens]
+
+agents: []
+
+commands: []
+
+skills:
+  - banner-design
+  - brand
+  - brandkit
+  - brutalist
+  - design
+  - design-system
+  - image-to-code
+  - imagegen-frontend
+  - minimalist
+  - redesign
+  - slides
+  - taste
+  - ui-styling
+  - ui-ux-search
+
+requires: []
+conflicts: []
