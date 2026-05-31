@@ -1,0 +1,23 @@
+name: seo-geo
+description: Search engine optimization AND generative engine optimization (AI citation optimization)
+tags: [seo, geo, search, ai-citation, content-optimization]
+
+agents: []
+
+commands:
+  - seo-auditor.md
+
+skills:
+  - geo-audit
+  - geo-brand-mentions
+  - geo-citability
+  - geo-compare
+  - geo-content
+  - geo-crawlers
+  - geo-llmstxt
+  - geo-platform-optimizer
+  - geo-schema
+  - geo-technical
+
+requires: []
+conflicts: []
