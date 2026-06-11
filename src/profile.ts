@@ -1,14 +1,16 @@
-import fs from "node:fs/promises";
-import path from "node:path";
-import { parse as parseYaml } from "yaml";
-import { profilesDir } from "./config.js";
-import type { Profile, ProfileYaml } from "./types.js";
+import fs from 'fs/promises';
+import path from 'path';
+import {parse as parseYaml} from 'yaml';
 
-const PROFILE_DEFAULTS: Omit<ProfileYaml, "name" | "description"> = {
+import {profilesDir} from './config.js';
+import type {Profile, ProfileYaml} from './types.js';
+
+const PROFILE_DEFAULTS: Omit<ProfileYaml, 'name' | 'description'> = {
   tags: [],
   agents: [],
   commands: [],
   skills: [],
+  hooks: [],
   requires: [],
   conflicts: [],
 };
@@ -35,10 +37,12 @@ export async function discoverProfiles(): Promise<Profile[]> {
   return profiles.sort((a, b) => a.name.localeCompare(b.name));
 }
 
-export async function loadProfile(profilePath: string): Promise<Profile | null> {
-  const yamlPath = path.join(profilePath, "profile.yaml");
+export async function loadProfile(
+  profilePath: string,
+): Promise<Profile | null> {
+  const yamlPath = path.join(profilePath, 'profile.yaml');
   try {
-    const raw = await fs.readFile(yamlPath, "utf-8");
+    const raw = await fs.readFile(yamlPath, 'utf-8');
     const parsed = parseYaml(raw) as Partial<ProfileYaml>;
     if (!parsed.name || !parsed.description) return null;
 
@@ -59,7 +63,11 @@ export async function findProfile(name: string): Promise<Profile | null> {
   return loadProfile(profilePath);
 }
 
-export function profileItemCount(profile: Profile): { agents: number; commands: number; skills: number } {
+export function profileItemCount(profile: Profile): {
+  agents: number;
+  commands: number;
+  skills: number;
+} {
   return {
     agents: profile.agents.length,
     commands: profile.commands.length,
@@ -69,8 +77,21 @@ export function profileItemCount(profile: Profile): { agents: number; commands: 
 
 export function formatItemCount(profile: Profile): string {
   const counts: string[] = [];
-  if (profile.agents.length) counts.push(`${profile.agents.length} agent${profile.agents.length > 1 ? "s" : ""}`);
-  if (profile.commands.length) counts.push(`${profile.commands.length} command${profile.commands.length > 1 ? "s" : ""}`);
-  if (profile.skills.length) counts.push(`${profile.skills.length} skill${profile.skills.length > 1 ? "s" : ""}`);
-  return counts.join(", ") || "empty";
+  if (profile.agents.length)
+    counts.push(
+      `${profile.agents.length} agent${profile.agents.length > 1 ? 's' : ''}`,
+    );
+  if (profile.commands.length)
+    counts.push(
+      `${profile.commands.length} command${profile.commands.length > 1 ? 's' : ''}`,
+    );
+  if (profile.skills.length)
+    counts.push(
+      `${profile.skills.length} skill${profile.skills.length > 1 ? 's' : ''}`,
+    );
+  if (profile.hooks.length)
+    counts.push(
+      `${profile.hooks.length} hook${profile.hooks.length > 1 ? 's' : ''}`,
+    );
+  return counts.join(', ') || 'empty';
 }

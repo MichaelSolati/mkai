@@ -3,3 +3,4 @@ dist/
 
 # State and stash directories (contain secrets)
 ~/.claude-profiles/
+config.yaml

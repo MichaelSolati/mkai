@@ -1,0 +1,9 @@
+# Ignore build and dependencies
+dist/
+node_modules/
+package-lock.json
+
+# Ignore data/content directories
+bin/
+profiles/
+tests/

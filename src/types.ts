@@ -5,6 +5,7 @@ export interface ProfileYaml {
   agents: string[];
   commands: string[];
   skills: string[];
+  hooks: string[];
   requires: string[];
   conflicts: string[];
 }
@@ -21,14 +22,14 @@ export interface State {
 
 export interface Activation {
   profile: string;
-  target: "global" | "project";
+  target: 'global' | 'project';
   projectPath?: string;
   activatedAt: string;
   links: LinkRecord[];
 }
 
 export interface LinkRecord {
-  type: "agent" | "command" | "skill";
+  type: 'agent' | 'command' | 'skill';
   name: string;
   source: string;
   destination: string;
@@ -36,10 +37,14 @@ export interface LinkRecord {
 }
 
 export interface Conflict {
-  type: "agent" | "command" | "skill";
+  type: 'agent' | 'command' | 'skill';
   name: string;
   destination: string;
-  kind: "real-file" | "symlink-other-profile" | "symlink-same-profile" | "broken-symlink";
+  kind:
+    | 'real-file'
+    | 'symlink-other-profile'
+    | 'symlink-same-profile'
+    | 'broken-symlink';
   ownedByProfile?: string;
 }
 
@@ -47,7 +52,7 @@ export interface StashRecord {
   originalPath: string;
   stashPath: string;
   profile: string;
-  type: "agent" | "command" | "skill";
+  type: 'agent' | 'command' | 'skill';
 }
 
-export type Target = { kind: "global" } | { kind: "project"; projectPath: string };
+export type Target = {kind: 'global'} | {kind: 'project'; projectPath: string};

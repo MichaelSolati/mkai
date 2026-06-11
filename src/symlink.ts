@@ -1,8 +1,11 @@
-import fs from "node:fs/promises";
-import path from "node:path";
+import fs from 'fs/promises';
+import path from 'path';
 
-export async function createSymlink(source: string, destination: string): Promise<void> {
-  await fs.mkdir(path.dirname(destination), { recursive: true });
+export async function createSymlink(
+  source: string,
+  destination: string,
+): Promise<void> {
+  await fs.mkdir(path.dirname(destination), {recursive: true});
   await fs.symlink(source, destination);
 }
 
