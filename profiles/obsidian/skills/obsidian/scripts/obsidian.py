@@ -259,10 +259,16 @@ class ObsidianClient:
         if content_type: hdrs["Content-Type"] = content_type
         req = urllib.request.Request(url, data=data, headers=hdrs, method=method)
         try:
-            with urllib.request.urlopen(req, context=self._ssl_ctx) as resp:
+            # Added 5-second timeout to prevent indefinite hangs
+            with urllib.request.urlopen(req, context=self._ssl_ctx, timeout=5) as resp:
                 raw = resp.read().decode()
         except urllib.error.HTTPError as e:
             raise SystemExit(f"HTTP {e.code}: {e.read().decode()[:500]}")
+        except urllib.error.URLError as e:
+            raise SystemExit(f"Connection Error: Obsidian Local REST API is unreachable. Is Obsidian running and the plugin enabled? ({e.reason})")
+        except TimeoutError:
+            raise SystemExit("Request Timeout: Obsidian took too long to respond. The app might be frozen or closed.")
+        
         try: return json.loads(raw)
         except: return raw
 
