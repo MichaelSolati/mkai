@@ -2,10 +2,13 @@ import os from 'os';
 import path from 'path';
 import {fileURLToPath} from 'url';
 
+import type {Platform} from './types.js';
+
 const HOME = os.homedir();
 
 export const paths = {
   claudeDir: path.join(HOME, '.claude'),
+  geminiDir: path.join(HOME, '.gemini'),
   stateDir: path.join(HOME, '.claude-profiles'),
   stateFile: path.join(HOME, '.claude-profiles', 'state.json'),
   stashDir: path.join(HOME, '.claude-profiles', 'stash'),
@@ -21,12 +24,14 @@ export function profilesDir(): string {
 
 export function resolveTarget(
   target: 'global' | 'project',
+  platform: Platform,
   projectPath?: string,
 ): string {
+  const dirName = platform === 'claude' ? '.claude' : '.gemini';
   if (target === 'project' && projectPath) {
-    return path.join(projectPath, '.claude');
+    return path.join(projectPath, dirName);
   }
-  return paths.claudeDir;
+  return platform === 'claude' ? paths.claudeDir : paths.geminiDir;
 }
 
 export function resolveItemDestination(

@@ -1,3 +1,5 @@
+import fs from 'fs/promises';
+
 import {resolveTarget} from './config.js';
 import {removeDispatcher} from './hooks/manager.js';
 import {restoreOriginal, stashSkillConfig} from './stash.js';
@@ -29,6 +31,7 @@ export async function deactivateProfile(
   const activation = await removeActivation(
     profileName,
     target.kind,
+    target.platform,
     projectPath,
   );
 
@@ -37,7 +40,7 @@ export async function deactivateProfile(
       success: false,
       linksRemoved: 0,
       restored: 0,
-      errors: [`Profile "${profileName}" is not active`],
+      errors: [`Profile "${profileName}" is not active on ${target.platform}`],
     };
   }
 
@@ -56,7 +59,10 @@ export async function deactivateProfile(
         await stashSkillConfig(link.destination, link.name);
       }
 
-      if (await isSymlink(link.destination)) {
+      if (link.isGenerated) {
+        await fs.unlink(link.destination);
+        result.linksRemoved++;
+      } else if (await isSymlink(link.destination)) {
         await removeSymlink(link.destination);
         result.linksRemoved++;
       }
@@ -76,9 +82,10 @@ export async function deactivateProfile(
 
   const targetDir = resolveTarget(
     target.kind,
+    target.platform,
     target.kind === 'project' ? target.projectPath : undefined,
   );
-  await removeDispatcher(targetDir);
+  await removeDispatcher(targetDir, target.platform);
 
   return result;
 }
@@ -97,8 +104,12 @@ export async function deactivateAll(
   for (const activation of [...state.activations]) {
     const target: Target =
       activation.target === 'project' && activation.projectPath
-        ? {kind: 'project', projectPath: activation.projectPath}
-        : {kind: 'global'};
+        ? {
+            kind: 'project',
+            projectPath: activation.projectPath,
+            platform: activation.platform,
+          }
+        : {kind: 'global', platform: activation.platform};
 
     const result = await deactivateProfile(activation.profile, target, options);
     combined.linksRemoved += result.linksRemoved;

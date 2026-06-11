@@ -9,11 +9,22 @@ export default defineConfig([
       'dist/',
       '**/node_modules/',
       'bin/',
-      'profiles/',
       'tests/',
       'package-lock.json',
       'tsup.config.ts'
     ],
+  },
+  {
+    files: ['profiles/**/*.js'],
+    languageOptions: {
+      globals: {
+        process: 'readonly',
+        console: 'readonly',
+      },
+    },
+    rules: {
+      'no-process-exit': 'off',
+    },
   },
   {
     files: ['src/**/*.ts', 'src/**/*.tsx'],

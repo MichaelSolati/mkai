@@ -1,3 +1,4 @@
+import fs from 'fs/promises';
 import path from 'path';
 
 import {resolveItemDestination, resolveTarget} from './config.js';
@@ -35,6 +36,7 @@ export async function activateProfile(
 ): Promise<ActivateResult> {
   const targetDir = resolveTarget(
     target.kind,
+    target.platform,
     target.kind === 'project' ? target.projectPath : undefined,
   );
 
@@ -43,6 +45,7 @@ export async function activateProfile(
     state.activations.some(
       a =>
         a.profile === profile.name &&
+        a.platform === target.platform &&
         a.target === target.kind &&
         (target.kind === 'global' || a.projectPath === target.projectPath),
     )
@@ -52,7 +55,9 @@ export async function activateProfile(
       linksCreated: 0,
       skipped: 0,
       overridden: 0,
-      errors: [`Profile "${profile.name}" is already active`],
+      errors: [
+        `Profile "${profile.name}" is already active for ${target.platform}`,
+      ],
     };
   }
 
@@ -70,7 +75,13 @@ export async function activateProfile(
 
   for (const item of items) {
     const source = resolveSource(profile.path, item.type, item.name);
-    const destination = resolveItemDestination(targetDir, item.type, item.name);
+    let destination = resolveItemDestination(targetDir, item.type, item.name);
+    let isGenerated = false;
+
+    if (target.platform === 'gemini' && item.type === 'command') {
+      destination = destination.replace(/\.md$/, '.toml');
+      isGenerated = true;
+    }
 
     const conflict = conflicts.find(
       c => c.name === item.name && c.type === item.type,
@@ -116,8 +127,18 @@ export async function activateProfile(
             source,
             destination,
             overrode: stashPath,
+            isGenerated,
           });
-          await createSymlink(source, destination);
+
+          if (isGenerated) {
+            const content = await fs.readFile(source, 'utf-8');
+            const toml = generateCommandToml(content);
+            await fs.mkdir(path.dirname(destination), {recursive: true});
+            await fs.writeFile(destination, toml);
+          } else {
+            await createSymlink(source, destination);
+          }
+
           result.overridden++;
           result.linksCreated++;
           continue;
@@ -127,13 +148,22 @@ export async function activateProfile(
 
     if (!options.dryRun) {
       try {
-        await createSymlink(source, destination);
+        if (isGenerated) {
+          const content = await fs.readFile(source, 'utf-8');
+          const toml = generateCommandToml(content);
+          await fs.mkdir(path.dirname(destination), {recursive: true});
+          await fs.writeFile(destination, toml);
+        } else {
+          await createSymlink(source, destination);
+        }
+
         createdLinks.push({
           type: item.type,
           name: item.name,
           source,
           destination,
           overrode: null,
+          isGenerated,
         });
         result.linksCreated++;
 
@@ -144,10 +174,14 @@ export async function activateProfile(
         // Rollback previously created links
         for (const link of createdLinks) {
           try {
-            await removeSymlink(link.destination);
+            if (link.isGenerated) {
+              await fs.unlink(link.destination);
+            } else {
+              await removeSymlink(link.destination);
+            }
           } catch {
             console.warn(
-              `Failed to remove symlink at ${link.destination} during rollback. Manual cleanup may be required.`,
+              `Failed to remove ${link.isGenerated ? 'file' : 'symlink'} at ${link.destination} during rollback. Manual cleanup may be required.`,
             );
           }
         }
@@ -165,13 +199,14 @@ export async function activateProfile(
   if (!options.dryRun && createdLinks.length > 0) {
     const activation: Activation = {
       profile: profile.name,
+      platform: target.platform,
       target: target.kind,
       projectPath: target.kind === 'project' ? target.projectPath : undefined,
       activatedAt: new Date().toISOString(),
       links: createdLinks,
     };
     await addActivation(activation);
-    await injectDispatcher(targetDir, profile);
+    await injectDispatcher(targetDir, profile, target.platform);
   }
 
   return result;
@@ -195,4 +230,30 @@ function resolveSource(
   const subdir =
     type === 'agent' ? 'agents' : type === 'command' ? 'commands' : 'skills';
   return path.join(profilePath, subdir, name);
+}
+
+function generateCommandToml(content: string): string {
+  const frontmatterRegex = /^---\n([\s\S]*?)\n---\n?([\s\S]*)$/;
+  const match = content.match(frontmatterRegex);
+
+  let description = '';
+  let prompt = content;
+
+  if (match) {
+    const yaml = match[1];
+    prompt = match[2].trim();
+
+    const descMatch = yaml.match(/^description:\s*(.*)$/m);
+    if (descMatch) {
+      description = descMatch[1].trim().replace(/^["']|["']$/g, '');
+    }
+  }
+
+  let toml = '';
+  if (description) {
+    toml += `description = ${JSON.stringify(description)}\n`;
+  }
+  toml += `prompt = """\n${prompt}\n"""`;
+
+  return toml;
 }

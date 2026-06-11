@@ -1,3 +1,5 @@
+export type Platform = 'claude' | 'gemini';
+
 export interface ProfileYaml {
   name: string;
   description: string;
@@ -22,6 +24,7 @@ export interface State {
 
 export interface Activation {
   profile: string;
+  platform: Platform;
   target: 'global' | 'project';
   projectPath?: string;
   activatedAt: string;
@@ -34,6 +37,7 @@ export interface LinkRecord {
   source: string;
   destination: string;
   overrode: string | null;
+  isGenerated?: boolean;
 }
 
 export interface Conflict {
@@ -55,4 +59,6 @@ export interface StashRecord {
   type: 'agent' | 'command' | 'skill';
 }
 
-export type Target = {kind: 'global'} | {kind: 'project'; projectPath: string};
+export type Target =
+  | {kind: 'global'; platform: Platform}
+  | {kind: 'project'; projectPath: string; platform: Platform};

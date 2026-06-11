@@ -8,12 +8,18 @@ export async function stashOriginal(
   profileName: string,
   type: 'agent' | 'command' | 'skill',
   name: string,
-): Promise<string> {
+): Promise<string | null> {
+  const lstat = await fs.lstat(originalPath);
+  if (lstat.isSymbolicLink()) {
+    // For symlinks, we don't stash, we just remove
+    await fs.unlink(originalPath);
+    return null;
+  }
+
   const stashPath = path.join(paths.originalsStashDir, profileName, type, name);
   await fs.mkdir(path.dirname(stashPath), {recursive: true});
 
-  const stat = await fs.stat(originalPath);
-  if (stat.isDirectory()) {
+  if (lstat.isDirectory()) {
     await fs.cp(originalPath, stashPath, {recursive: true});
     await fs.rm(originalPath, {recursive: true});
   } else {

@@ -1,7 +1,7 @@
 import fs from 'fs/promises';
 
 import {paths} from './config.js';
-import type {Activation, State} from './types.js';
+import type {Activation, Platform, State} from './types.js';
 
 const EMPTY_STATE: State = {
   version: 1,
@@ -18,7 +18,16 @@ export async function ensureStateDir(): Promise<void> {
 export async function readState(): Promise<State> {
   try {
     const raw = await fs.readFile(paths.stateFile, 'utf-8');
-    return JSON.parse(raw) as State;
+    const state = JSON.parse(raw) as State;
+
+    // Migration: ensure all activations have a platform
+    for (const a of state.activations) {
+      if (!a.platform) {
+        a.platform = 'claude';
+      }
+    }
+
+    return state;
   } catch {
     return {...EMPTY_STATE};
   }
@@ -37,14 +46,16 @@ export async function addActivation(activation: Activation): Promise<void> {
 
 export async function removeActivation(
   profileName: string,
-  target: 'global' | 'project',
+  targetKind: 'global' | 'project',
+  platform: Platform,
   projectPath?: string,
 ): Promise<Activation | null> {
   const state = await readState();
   const idx = state.activations.findIndex(
     a =>
       a.profile === profileName &&
-      a.target === target &&
+      a.target === targetKind &&
+      a.platform === platform &&
       a.projectPath === projectPath,
   );
   if (idx === -1) return null;

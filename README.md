@@ -15,45 +15,50 @@ After linking, `cpx` is available globally.
 ## Usage
 
 ```bash
-cpx                        # interactive TUI
-cpx list                   # show available profiles
-cpx activate <profiles..>  # symlink a profile into ~/.claude/
-cpx deactivate <profiles..># remove symlinks
-cpx status                 # show what's active
-cpx check                  # validate symlink health
-cpx init <name>            # scaffold a new profile
+cpx                        # Interactive TUI dashboard
+cpx list                   # Show available profiles
+cpx activate <profiles..>  # Activate profiles
+cpx deactivate <profiles..># Deactivate profiles
+cpx status                 # Show currently active profiles
+cpx check                  # Validate symlink health
+cpx init <name>            # Scaffold a new profile
 ```
 
-### Flags
+### Terminal User Interface (TUI)
+
+Running `cpx` without arguments launches a persistent React-based dashboard.
+
+- **[↑/↓] Navigate**: Select profiles from the list.
+- **[Enter/Space] Actions**: Open a modal to pick Platform/Target and Activate/Deactivate.
+- **[s] Details**: View a detailed breakdown of agents, commands, and skills for the selected profile.
+- **[c] Health Check**: Run a real-time validation of all active symlinks.
+- **[q] Quit**: Exit the TUI.
+
+### Flags & Options
 
 | Flag | Command | Effect |
 |------|---------|--------|
-| `--project` | activate | Install into `./.claude/` instead of `~/.claude/` |
+| `-p, --platform <platform>` | activate, deactivate | Target platform (`claude` or `gemini`). Default: `claude` |
+| `-t, --target <target>` | activate, deactivate | Target location (`global` or `project`). Default: `global` (or `all` for deactivate) |
 | `--force` | activate | Override file conflicts without prompting |
-| `--dry-run` | activate, deactivate | Preview without making changes |
-| `--all` | deactivate | Remove all active profiles |
+| `--dry-run` | activate, deactivate | Preview changes without modifying the filesystem |
+| `--all` | deactivate | Deactivate all active profiles |
 | `--json` | list, status | Machine-readable output |
+
+**Example One-Liners:**
+```bash
+# Activate engineering profile for Claude globally
+cpx activate engineering --platform claude --target global
+
+# Deactivate obsidian profile for Gemini in the current project
+cpx deactivate obsidian --platform gemini --target project
+```
 
 ## How it works
 
-Each profile is a directory under `profiles/` containing a `profile.yaml` manifest and subdirectories for agents, commands, and skills:
+Each profile is a directory under `profiles/` containing a `profile.yaml` manifest and subdirectories for agents, commands, and skills.
 
-```
-profiles/engineering/
-  profile.yaml
-  agents/
-  commands/
-    context-prime.md
-    focused-fix.md
-    optimize.md
-  skills/
-    diagnose/
-    improve-architecture/
-    prototype/
-    tdd/
-```
-
-When activated, cpx creates symlinks from `~/.claude/{agents,commands,skills}/` pointing into the profile directory. Deactivation removes them. State is tracked in `~/.claude-profiles/state.json`.
+When activated, cpx creates symlinks in the target directory (e.g., `~/.claude/` or `./.claude/`) pointing back to the profile source. Deactivation safely removes these links. State is persisted in `~/.claude-profiles/state.json`.
 
 If a symlink would overwrite an existing file, cpx stashes the original and restores it on deactivation.
 

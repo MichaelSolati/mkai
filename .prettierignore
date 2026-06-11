@@ -5,5 +5,4 @@ package-lock.json
 
 # Ignore data/content directories
 bin/
-profiles/
 tests/

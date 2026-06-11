@@ -1,7 +1,7 @@
 {
   "name": "cpx",
   "version": "0.1.0",
-  "description": "Claude Profile Loader - manage groups of agents, skills, and commands",
+  "description": "AI Profile Loader - manage groups of agents, skills, and commands for Claude Code and Gemini CLI",
   "type": "module",
   "bin": {
     "cpx": "./bin/cpx.js"
@@ -17,13 +17,16 @@
     "prepare": "npm run build"
   },
   "dependencies": {
-    "@clack/prompts": "^0.10.0",
     "chalk": "^5.4.0",
     "commander": "^13.0.0",
+    "ink": "^7.0.5",
+    "ink-use-stdout-dimensions": "^1.0.5",
+    "react": "^19.2.7",
     "yaml": "^2.7.0"
   },
   "devDependencies": {
     "@types/node": "^22.7.5",
+    "@types/react": "^19.2.17",
     "eslint-plugin-simple-import-sort": "^13.0.0",
     "gts": "^7.0.0",
     "rimraf": "^6.1.3",
