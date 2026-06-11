@@ -1,0 +1,23 @@
+name: obsidian
+description: Digital Twin foundation - Second Brain, identity management, and cross-sphere knowledge
+tags: [productivity, obsidian, brain, identity]
+
+agents: []
+
+commands:
+  - brain-me.md
+  - brain-setup.md
+  - brain-status.md
+  - brain-health.md
+  - brain-map.md
+
+skills:
+  - obsidian
+
+hooks:
+  - SessionStart
+  - PreToolUse
+  - TaskCompleted
+
+requires: []
+conflicts: []

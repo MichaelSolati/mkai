@@ -1,0 +1,14 @@
+# Obsidian — Skill Configuration
+#
+# Copy this file to config.yaml and fill in your API key:
+#   cp config.yaml.example config.yaml
+#
+# Get your API key from:
+#   Obsidian → Settings → Local REST API → API Key
+
+api_key: ""
+
+# Optional — overrides
+# host: 127.0.0.1
+# port: 27123
+# identity_path: "identity/me.md"
