@@ -1,32 +1,30 @@
-# cpx
+# mkai
 
-Claude Profile Loader - activate and deactivate groups of agents, skills, and commands for Claude Code via symlinks.
+AI Profile Loader - activate and deactivate groups of agents, skills, and commands for multiple coding agents (Claude Code, Gemini CLI, etc) via symlinks.
 
 ## Install
 
 ```bash
 npm install
-npm run build
-npm link
 ```
 
-After linking, `cpx` is available globally.
+This will automatically build the project and link the `mkai` binary globally.
 
 ## Usage
 
 ```bash
-cpx                        # Interactive TUI dashboard
-cpx list                   # Show available profiles
-cpx activate <profiles..>  # Activate profiles
-cpx deactivate <profiles..># Deactivate profiles
-cpx status                 # Show currently active profiles
-cpx check                  # Validate symlink health
-cpx init <name>            # Scaffold a new profile
+mkai                        # Interactive TUI dashboard
+mkai list                   # Show available profiles
+mkai activate <profiles..>  # Activate profiles
+mkai deactivate <profiles..># Deactivate profiles
+mkai status                 # Show currently active profiles
+mkai check                  # Validate symlink health
+mkai init <name>            # Scaffold a new profile
 ```
 
 ### Terminal User Interface (TUI)
 
-Running `cpx` without arguments launches a persistent React-based dashboard.
+Running `mkai` without arguments launches a persistent React-based dashboard.
 
 - **[↑/↓] Navigate**: Select profiles from the list.
 - **[Enter/Space] Actions**: Open a modal to pick Platform/Target and Activate/Deactivate.
@@ -48,19 +46,19 @@ Running `cpx` without arguments launches a persistent React-based dashboard.
 **Example One-Liners:**
 ```bash
 # Activate engineering profile for Claude globally
-cpx activate engineering --platform claude --target global
+mkai activate engineering --platform claude --target global
 
 # Deactivate obsidian profile for Gemini in the current project
-cpx deactivate obsidian --platform gemini --target project
+mkai deactivate obsidian --platform gemini --target project
 ```
 
 ## How it works
 
 Each profile is a directory under `profiles/` containing a `profile.yaml` manifest and subdirectories for agents, commands, and skills.
 
-When activated, cpx creates symlinks in the target directory (e.g., `~/.claude/` or `./.claude/`) pointing back to the profile source. Deactivation safely removes these links. State is persisted in `~/.claude-profiles/state.json`.
+When activated, `mkai` creates symlinks in the target directory (e.g., `~/.claude/` or `~/.gemini/`) pointing back to the profile source. Deactivation safely removes these links. State is persisted in `~/.mkai/state.json`.
 
-If a symlink would overwrite an existing file, cpx stashes the original and restores it on deactivation.
+If a symlink would overwrite an existing file, `mkai` stashes the original and restores it on deactivation.
 
 ## Profiles
 
@@ -71,7 +69,7 @@ If a symlink would overwrite an existing file, cpx stashes the original and rest
 | **flutter** | 2 skills | Flutter/Dart development - testing patterns and OWASP mobile security scanning |
 | **game-dev** | 53 agents, 75 skills | Complete game development studio - 53 specialist agents and 75 skills covering design, programming, art, audio, QA, and production |
 | **marketing** | 4 skills | CRO, copywriting, cold email, pricing strategy, and growth skills |
-| **productivity** | 3 commands, 6 skills | Meta-skills for working with Claude - prompt engineering, handoffs, issue management, PRDs |
+| **productivity** | 3 commands, 6 skills | Meta-skills for working with AI - prompt engineering, handoffs, issue management, PRDs |
 | **real-estate** | 5 agents, 15 skills | Property analysis, listing evaluation, market research, investment analysis, and client management |
 | **research** | 3 agents, 2 commands, 2 skills | Academic paper writing, deep research, literature review, and synthesis pipelines |
 | **seo-geo** | 1 command, 10 skills | Search engine optimization AND generative engine optimization (AI citation optimization) |
@@ -81,7 +79,7 @@ If a symlink would overwrite an existing file, cpx stashes the original and rest
 ## Creating a profile
 
 ```bash
-cpx init my-profile
+mkai init my-profile
 ```
 
 Edit `profiles/my-profile/profile.yaml`:
@@ -104,17 +102,9 @@ requires: []
 conflicts: []
 ```
 
-- **Agents** are markdown files in `agents/` - symlinked to `~/.claude/agents/`
-- **Commands** are markdown files in `commands/` - symlinked to `~/.claude/commands/`
-- **Skills** are directories in `skills/` containing a `SKILL.md` - symlinked to `~/.claude/skills/`
-
-### Cross-skill references
-
-When one skill references another skill's files, use the absolute installed path:
-
-```
-~/.claude/skills/other-skill/references/something.md
-```
+- **Agents** are markdown files in `agents/` - symlinked to `agents/` in the target platform folder.
+- **Commands** are markdown files in `commands/` - symlinked to `commands/` in the target platform folder.
+- **Skills** are directories in `skills/` containing a `SKILL.md` - symlinked to `skills/` in the target platform folder.
 
 ## Development
 

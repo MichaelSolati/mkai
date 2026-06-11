@@ -1,7 +1,7 @@
 import {Box, Text} from 'ink';
 import React from 'react';
 
-import type {Profile, State} from '../types.js';
+import type {Profile, State} from '../types';
 
 interface Props {
   profiles: Profile[];

@@ -1,7 +1,7 @@
 import {Box, Text, useInput} from 'ink';
 import {useState} from 'react';
 
-import type {Platform, Profile} from '../types.js';
+import type {Platform, Profile} from '../types';
 
 export interface ActionChoice {
   label: string;

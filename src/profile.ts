@@ -2,8 +2,8 @@ import fs from 'fs/promises';
 import path from 'path';
 import {parse as parseYaml} from 'yaml';
 
-import {profilesDir} from './config.js';
-import type {Profile, ProfileYaml} from './types.js';
+import {profilesDir} from './config';
+import type {Profile, ProfileYaml} from './types';
 
 const PROFILE_DEFAULTS: Omit<ProfileYaml, 'name' | 'description'> = {
   tags: [],

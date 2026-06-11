@@ -1,12 +1,12 @@
-import {spawn} from 'node:child_process';
-import fs from 'node:fs/promises';
-import path from 'node:path';
+import {spawn} from 'child_process';
+import fs from 'fs/promises';
+import path from 'path';
 
-import {profilesDir} from '../config.js';
-import {readState} from '../state.js';
-import type {Activation, Platform, Profile} from '../types.js';
+import {profilesDir} from '../config';
+import {readState} from '../state';
+import type {Activation, Platform, Profile} from '../types';
 
-const HOOK_COMMAND = 'cpx dispatch';
+const HOOK_COMMAND = 'mkai dispatch';
 
 /**
  * Maps profile-defined events (usually Claude-named) to platform-specific events.
@@ -55,13 +55,7 @@ export async function injectDispatcher(
     const targetEvent = mapEvent(event, platform);
     if (!settings.hooks[targetEvent]) settings.hooks[targetEvent] = [];
 
-    // 1. Cleanup: Remove any old "flat" hooks that were incorrectly added in previous versions
-    settings.hooks[targetEvent] = settings.hooks[targetEvent].filter(
-      (h: {command?: string; hooks?: unknown}) =>
-        !(h.command && h.command.includes(HOOK_COMMAND)),
-    );
-
-    // 2. Find or create a group that contains our hook command
+    // Find or create a group that contains our hook command
     const group = settings.hooks[targetEvent].find(
       (g: {hooks?: Array<{command?: string}>}) =>
         g.hooks &&
@@ -136,7 +130,7 @@ export async function removeDispatcher(
 }
 
 /**
- * Executes CPX-managed hooks for an event.
+ * Executes MKAI-managed hooks for an event.
  */
 export async function runDispatch(
   eventName: string,

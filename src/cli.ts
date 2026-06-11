@@ -1,24 +1,30 @@
 import chalk from 'chalk';
 import {Command} from 'commander';
+import fs from 'fs';
+import path from 'path';
+import {fileURLToPath} from 'url';
 
-import {activateProfile} from './activate.js';
-import {profilesDir} from './config.js';
-import {deactivateAll, deactivateProfile} from './deactivate.js';
-import {runDispatch} from './hooks/manager.js';
-import {discoverProfiles, findProfile, formatItemCount} from './profile.js';
-import {isActive, readState} from './state.js';
-import {exists, isHealthySymlink} from './symlink.js';
-import {runTui} from './tui.js';
-import type {Platform, Target} from './types.js';
+import {activateProfile} from './activate';
+import {profilesDir} from './config';
+import {deactivateAll, deactivateProfile} from './deactivate';
+import {runDispatch} from './hooks/manager';
+import {discoverProfiles, findProfile, formatItemCount} from './profile';
+import {isActive, readState} from './state';
+import {exists, isHealthySymlink} from './symlink';
+import {runTui} from './tui';
+import type {Platform, Target} from './types';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const pkg = JSON.parse(
+  fs.readFileSync(path.join(__dirname, '../package.json'), 'utf-8'),
+);
 
 const program = new Command();
 
 program
-  .name('cpx')
-  .description(
-    'AI Profile Loader - manage groups of agents, skills, and commands for Claude Code and Gemini CLI',
-  )
-  .version('0.1.0')
+  .name(pkg.name)
+  .description(pkg.description)
+  .version(pkg.version)
   .action(async () => {
     await runTui();
   });
@@ -276,8 +282,8 @@ program
   .description('Scaffold a new profile')
   .argument('<name>', 'Profile name')
   .action(async (name: string) => {
-    const fs = await import('node:fs/promises');
-    const path = await import('node:path');
+    const fs = await import('fs/promises');
+    const path = await import('path');
 
     const dir = path.join(profilesDir(), name);
     try {
@@ -332,7 +338,7 @@ program
           platform = 'gemini';
         } else {
           // Fallback: look for local config dirs
-          const fs = await import('node:fs/promises');
+          const fs = await import('fs/promises');
           try {
             await fs.access('.gemini');
             platform = 'gemini';

@@ -1,8 +1,8 @@
 import fs from 'fs/promises';
 
-import {resolveItemDestination} from './config.js';
-import {readState} from './state.js';
-import type {Conflict, Profile} from './types.js';
+import {resolveItemDestination} from './config';
+import {readState} from './state';
+import type {Conflict, Profile} from './types';
 
 export async function detectConflicts(
   profile: Profile,

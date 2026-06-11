@@ -2,18 +2,18 @@ import os from 'os';
 import path from 'path';
 import {fileURLToPath} from 'url';
 
-import type {Platform} from './types.js';
+import type {Platform} from './types';
 
 const HOME = os.homedir();
 
 export const paths = {
   claudeDir: path.join(HOME, '.claude'),
   geminiDir: path.join(HOME, '.gemini'),
-  stateDir: path.join(HOME, '.claude-profiles'),
-  stateFile: path.join(HOME, '.claude-profiles', 'state.json'),
-  stashDir: path.join(HOME, '.claude-profiles', 'stash'),
-  configStashDir: path.join(HOME, '.claude-profiles', 'stash', 'configs'),
-  originalsStashDir: path.join(HOME, '.claude-profiles', 'stash', 'originals'),
+  stateDir: path.join(HOME, '.mkai'),
+  stateFile: path.join(HOME, '.mkai', 'state.json'),
+  stashDir: path.join(HOME, '.mkai', 'stash'),
+  configStashDir: path.join(HOME, '.mkai', 'stash', 'configs'),
+  originalsStashDir: path.join(HOME, '.mkai', 'stash', 'originals'),
 };
 
 export function profilesDir(): string {

@@ -1,19 +1,13 @@
 import fs from 'fs/promises';
 import path from 'path';
 
-import {resolveItemDestination, resolveTarget} from './config.js';
-import {detectConflicts} from './conflict.js';
-import {injectDispatcher} from './hooks/manager.js';
-import {restoreSkillConfig, stashOriginal} from './stash.js';
-import {addActivation, readState} from './state.js';
-import {createSymlink, removeSymlink} from './symlink.js';
-import type {
-  Activation,
-  Conflict,
-  LinkRecord,
-  Profile,
-  Target,
-} from './types.js';
+import {resolveItemDestination, resolveTarget} from './config';
+import {detectConflicts} from './conflict';
+import {injectDispatcher} from './hooks/manager';
+import {restoreSkillConfig, stashOriginal} from './stash';
+import {addActivation, readState} from './state';
+import {createSymlink, removeSymlink} from './symlink';
+import type {Activation, Conflict, LinkRecord, Profile, Target} from './types';
 
 export interface ActivateOptions {
   force?: boolean;

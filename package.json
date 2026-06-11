@@ -1,10 +1,10 @@
 {
-  "name": "cpx",
+  "name": "mkai",
   "version": "0.1.0",
-  "description": "AI Profile Loader - manage groups of agents, skills, and commands for Claude Code and Gemini CLI",
+  "description": "AI Profile Loader - manage groups of agents, skills, and commands for multiple coding agents (Claude Code, Gemini CLI, etc)",
   "type": "module",
   "bin": {
-    "cpx": "./bin/cpx.js"
+    "mkai": "./bin/mkai.js"
   },
   "scripts": {
     "clean": "rimraf dist",
@@ -14,7 +14,15 @@
     "test": "node --experimental-vm-modules node_modules/.bin/vitest",
     "lint": "gts lint",
     "fix": "gts fix",
-    "prepare": "npm run build"
+    "postinstall": "npm run build && npm link --ignore-scripts"
+  },
+  "author": "Michael Solati <mkslt04@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MichaelSolati/mkai.git"
+  },
+  "bugs": {
+    "url": "https://github.com/MichaelSolati/mkai/issues"
   },
   "dependencies": {
     "chalk": "^5.4.0",

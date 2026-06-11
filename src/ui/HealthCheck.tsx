@@ -1,8 +1,8 @@
 import {Box, Text} from 'ink';
 import {useEffect, useState} from 'react';
 
-import {exists, isHealthySymlink} from '../symlink.js';
-import type {State} from '../types.js';
+import {exists, isHealthySymlink} from '../symlink';
+import type {State} from '../types';
 
 interface Props {
   state: State;

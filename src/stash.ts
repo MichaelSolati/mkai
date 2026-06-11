@@ -1,7 +1,7 @@
 import fs from 'fs/promises';
 import path from 'path';
 
-import {paths} from './config.js';
+import {paths} from './config';
 
 export async function stashOriginal(
   originalPath: string,

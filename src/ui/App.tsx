@@ -1,16 +1,16 @@
 import {Box, Text, useApp, useInput} from 'ink';
 import React, {useEffect, useState} from 'react';
 
-import {activateProfile} from '../activate.js';
-import {deactivateProfile} from '../deactivate.js';
-import {discoverProfiles} from '../profile.js';
-import {readState} from '../state.js';
-import type {Platform, Profile, State, Target} from '../types.js';
-import {HealthCheck} from './HealthCheck.js';
-import {ProfileList} from './ProfileList.js';
-import {StatusDetails} from './StatusDetails.js';
-import {StatusLine} from './StatusLine.js';
-import {ToggleModal} from './ToggleModal.js';
+import {activateProfile} from '../activate';
+import {deactivateProfile} from '../deactivate';
+import {discoverProfiles} from '../profile';
+import {readState} from '../state';
+import type {Platform, Profile, State, Target} from '../types';
+import {HealthCheck} from './HealthCheck';
+import {ProfileList} from './ProfileList';
+import {StatusDetails} from './StatusDetails';
+import {StatusLine} from './StatusLine';
+import {ToggleModal} from './ToggleModal';
 
 export const App = () => {
   const {exit} = useApp();
@@ -97,7 +97,7 @@ export const App = () => {
   if (!state) {
     return (
       <Box padding={1}>
-        <Text color="yellow">✦ Initializing CPX...</Text>
+        <Text color="yellow">✦ Initializing MKAI...</Text>
       </Box>
     );
   }
@@ -111,7 +111,7 @@ export const App = () => {
     >
       <Box marginBottom={1} justifyContent="center">
         <Text bold color="magenta">
-          ☄ CPX COMMAND CENTER ☄
+          ☄ MKAI COMMAND CENTER ☄
         </Text>
       </Box>
 

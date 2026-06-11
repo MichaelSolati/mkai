@@ -1,6 +1,6 @@
 import {Box, Text} from 'ink';
 
-import type {Activation} from '../types.js';
+import type {Activation} from '../types';
 
 interface Props {
   activation?: Activation;

@@ -1,7 +1,7 @@
 import fs from 'fs/promises';
 
-import {paths} from './config.js';
-import type {Activation, Platform, State} from './types.js';
+import {paths} from './config';
+import type {Activation, Platform, State} from './types';
 
 const EMPTY_STATE: State = {
   version: 1,

@@ -1,11 +1,11 @@
 import fs from 'fs/promises';
 
-import {resolveTarget} from './config.js';
-import {removeDispatcher} from './hooks/manager.js';
-import {restoreOriginal, stashSkillConfig} from './stash.js';
-import {readState, removeActivation} from './state.js';
-import {isSymlink, removeSymlink} from './symlink.js';
-import type {Target} from './types.js';
+import {resolveTarget} from './config';
+import {removeDispatcher} from './hooks/manager';
+import {restoreOriginal, stashSkillConfig} from './stash';
+import {readState, removeActivation} from './state';
+import {isSymlink, removeSymlink} from './symlink';
+import type {Target} from './types';
 
 export interface DeactivateResult {
   success: boolean;
