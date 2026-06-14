@@ -74,7 +74,7 @@ Start here. Set expectations, reduce defensiveness.
 Before starting Phase 1, silently check whether a user dossier exists:
 
 ```bash
-python3 skills/obsidian/scripts/obsidian.py read "Dating/_meta/my-profile.md"
+python3 skills/obsidian/scripts/obsidian.py read "dating/_meta/my-profile.md"
 ```
 
 **If the dossier exists:**
@@ -291,7 +291,7 @@ After delivering the copy doc, offer to save identity-level findings back to the
 - Map findings to dossier sections per `references/dossier-integration.md`.
 - Write each section to `$TMPDIR/section.md` and patch:
 ```bash
-python3 skills/obsidian/scripts/obsidian.py patch "Dating/_meta/my-profile.md" \
+python3 skills/obsidian/scripts/obsidian.py patch "dating/_meta/my-profile.md" \
   --target-type heading --target "<Section>" \
   --operation append --file "$TMPDIR/section.md"
 ```
@@ -379,7 +379,7 @@ Adapt to what they need:
 - `references/photo-guidelines.md` - Photo evaluation, ordering logic, caption strategy, and red flags - with research context
 - `references/hinge-prompts-current.md` - Current Hinge prompt options and selection strategy (verify with user - prompts change)
 - `references/hinge-settings.md` - Settings walkthrough, algorithm mechanics, evidence tiers for each claim
-- `references/dossier-integration.md` - How this skill reads from and writes to `Dating/_meta/my-profile.md`; maps discovery question areas to dossier sections
+- `references/dossier-integration.md` - How this skill reads from and writes to `dating/_meta/my-profile.md`; maps discovery question areas to dossier sections
 
 ---
 

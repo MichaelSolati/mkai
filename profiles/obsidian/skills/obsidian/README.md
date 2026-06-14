@@ -20,7 +20,7 @@ Install the **Local REST API** plugin in Obsidian:
    - Copy the **API Key**.
    - (WSL Users) Enable **Non-Local Connections** if available, or ensure your firewall allows connections from the WSL IP.
 
-### 2. Configure CPX
+### 2. Configure mkai
 Create your local config:
 ```bash
 cp profiles/obsidian/skills/obsidian/config.yaml.example profiles/obsidian/skills/obsidian/config.yaml
@@ -53,7 +53,7 @@ python3 obsidian.py brain decision|pattern|mistake|learning "content" --scope gl
 
 ```txt
 profiles/obsidian/
-├── profile.yaml              # CPX Profile definition
+├── profile.yaml              # mkai Profile definition
 ├── commands/
 │   ├── brain-me.md           # Identity priming
 │   ├── brain-setup.md        # Initialization

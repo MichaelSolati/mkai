@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * 01-memory-hijack.js — CPX Hook: Intercept native memory and redirect to Obsidian
+ * 01-memory-hijack.js — mkai Hook: Intercept native memory and redirect to Obsidian
  *
  * This hook blocks tool calls that attempt to use Claude's native memory
  * or CLAUDE.md for persistent context, forcing the agent to use the Obsidian skill.

@@ -41,10 +41,10 @@ Stateless message crafter for openers, mid-conversation replies, date asks, and 
 ## Usage
 
 ```sh
-cpx activate dating
+mkai activate dating
 ```
 
-Then tell Claude: *"Help me optimize my Hinge profile"*
+Then tell your agent: *"Help me optimize my Hinge profile"*
 
 ---
 

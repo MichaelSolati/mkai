@@ -17,14 +17,14 @@ Multi-line content always goes to `$TMPDIR/<name>.md` first, then passed via `--
 
 ## 1. New match
 
-**Goal:** Create `Dating/<Name>/profile.md` and `Dating/<Name>/conversation.md` with correct structure.
+**Goal:** Create `dating/<name-slug>/profile.md` and `dating/<name-slug>/conversation.md` with correct structure.
 
 ```bash
 # Build profile.md from template + user's input, write to vault
-python3 skills/obsidian/scripts/obsidian.py write "Dating/<Name>/profile.md" --file "$TMPDIR/profile.md"
+python3 skills/obsidian/scripts/obsidian.py write "dating/<name-slug>/profile.md" --file "$TMPDIR/profile.md"
 
 # Build conversation.md skeleton with Pre-Match Strategy filled in
-python3 skills/obsidian/scripts/obsidian.py write "Dating/<Name>/conversation.md" --file "$TMPDIR/conversation.md"
+python3 skills/obsidian/scripts/obsidian.py write "dating/<name-slug>/conversation.md" --file "$TMPDIR/conversation.md"
 ```
 
 - `write` creates intermediate folders automatically (no mkdir needed).
@@ -34,8 +34,8 @@ python3 skills/obsidian/scripts/obsidian.py write "Dating/<Name>/conversation.md
 
 **Verification:**
 ```bash
-python3 skills/obsidian/scripts/obsidian.py read "Dating/<Name>/profile.md" --map
-python3 skills/obsidian/scripts/obsidian.py read "Dating/<Name>/conversation.md" --map
+python3 skills/obsidian/scripts/obsidian.py read "dating/<name-slug>/profile.md" --map
+python3 skills/obsidian/scripts/obsidian.py read "dating/<name-slug>/conversation.md" --map
 ```
 
 ---
@@ -46,14 +46,14 @@ python3 skills/obsidian/scripts/obsidian.py read "Dating/<Name>/conversation.md"
 
 ### Append within a section (most common - Notes & Observations)
 ```bash
-python3 skills/obsidian/scripts/obsidian.py patch "Dating/<Name>/profile.md" \
+python3 skills/obsidian/scripts/obsidian.py patch "dating/<name-slug>/profile.md" \
   --target-type heading --target "Notes & Observations" \
   --operation append --file "$TMPDIR/note.md"
 ```
 
 ### Replace a section (facts that have changed - Quick Facts, Compatibility Signals, etc.)
 ```bash
-python3 skills/obsidian/scripts/obsidian.py patch "Dating/<Name>/profile.md" \
+python3 skills/obsidian/scripts/obsidian.py patch "dating/<name-slug>/profile.md" \
   --target-type heading --target "Compatibility Signals" \
   --operation replace --file "$TMPDIR/signals.md"
 ```
@@ -68,7 +68,7 @@ python3 skills/obsidian/scripts/obsidian.py patch "Dating/<Name>/profile.md" \
 
 First, find the current last exchange number:
 ```bash
-python3 skills/obsidian/scripts/obsidian.py read "Dating/<Name>/conversation.md" --map
+python3 skills/obsidian/scripts/obsidian.py read "dating/<name-slug>/conversation.md" --map
 ```
 The `--map` output lists headings. Find the highest `## Exchange N`, increment by 1.
 
@@ -84,7 +84,7 @@ Build the exchange block in `$TMPDIR/exchange.md`:
 
 Append to the log:
 ```bash
-python3 skills/obsidian/scripts/obsidian.py append "Dating/<Name>/conversation.md" --file "$TMPDIR/exchange.md"
+python3 skills/obsidian/scripts/obsidian.py append "dating/<name-slug>/conversation.md" --file "$TMPDIR/exchange.md"
 ```
 
 ---
@@ -102,7 +102,7 @@ Build reply block in `$TMPDIR/reply.md`:
 
 Append:
 ```bash
-python3 skills/obsidian/scripts/obsidian.py append "Dating/<Name>/conversation.md" --file "$TMPDIR/reply.md"
+python3 skills/obsidian/scripts/obsidian.py append "dating/<name-slug>/conversation.md" --file "$TMPDIR/reply.md"
 ```
 
 > `append` adds to the end of the file. Since exchanges are written sequentially, this is correct - the reply always follows the most recently appended exchange block.
@@ -112,12 +112,12 @@ python3 skills/obsidian/scripts/obsidian.py append "Dating/<Name>/conversation.m
 ## 5. List active matches
 
 ```bash
-python3 skills/obsidian/scripts/obsidian.py list Dating/
+python3 skills/obsidian/scripts/obsidian.py list dating/
 ```
 
-This returns folder names (one per line). For each folder, read the metadata block:
+This returns folder names (one per line). For each folder, read the metadata block (the top-level heading section containing platform/matched details):
 ```bash
-python3 skills/obsidian/scripts/obsidian.py read "Dating/<Name>/conversation.md" --heading "{{start}}"
+python3 skills/obsidian/scripts/obsidian.py read "dating/<name-slug>/conversation.md" --heading "<Name> - Conversation Log"
 ```
 
 Or read the full file and parse the `**Platform:**`, `**Matched:**`, `**Status:**` lines from the top of the conversation log.
@@ -135,7 +135,7 @@ Render as a table:
 Build `$TMPDIR/voice-samples.md` from user's pasted texts, preserving their style exactly. Then write to vault:
 
 ```bash
-python3 skills/obsidian/scripts/obsidian.py write "Dating/_meta/voice-samples.md" --file "$TMPDIR/voice-samples.md"
+python3 skills/obsidian/scripts/obsidian.py write "dating/_meta/voice-samples.md" --file "$TMPDIR/voice-samples.md"
 ```
 
 The `_meta/` folder is created automatically on first write. If it already exists, `write` overwrites the file.
@@ -144,23 +144,23 @@ The `_meta/` folder is created automatically on first write. If it already exist
 
 ## 7. Update my profile
 
-**Goal:** Add or replace content in a specific section of `Dating/_meta/my-profile.md`.
+**Goal:** Add or replace content in a specific section of `dating/_meta/my-profile.md`.
 
 If the file doesn't exist yet, create it from `references/my-profile-template.md`:
 ```bash
-python3 skills/obsidian/scripts/obsidian.py write "Dating/_meta/my-profile.md" --file "$TMPDIR/my-profile.md"
+python3 skills/obsidian/scripts/obsidian.py write "dating/_meta/my-profile.md" --file "$TMPDIR/my-profile.md"
 ```
 
 ### Append within a section (most new info lands here)
 ```bash
-python3 skills/obsidian/scripts/obsidian.py patch "Dating/_meta/my-profile.md" \
+python3 skills/obsidian/scripts/obsidian.py patch "dating/_meta/my-profile.md" \
   --target-type heading --target "Notes & Observations" \
   --operation append --file "$TMPDIR/note.md"
 ```
 
 ### Replace a section (facts that have changed)
 ```bash
-python3 skills/obsidian/scripts/obsidian.py patch "Dating/_meta/my-profile.md" \
+python3 skills/obsidian/scripts/obsidian.py patch "dating/_meta/my-profile.md" \
   --target-type heading --target "Quick Facts" \
   --operation replace --file "$TMPDIR/facts.md"
 ```
@@ -182,7 +182,7 @@ python3 skills/obsidian/scripts/obsidian.py patch "Dating/_meta/my-profile.md" \
 ## 8. View my profile
 
 ```bash
-python3 skills/obsidian/scripts/obsidian.py read "Dating/_meta/my-profile.md"
+python3 skills/obsidian/scripts/obsidian.py read "dating/_meta/my-profile.md"
 ```
 
 If absent, note to user: "No dossier yet. Say 'update my profile' to start one."
@@ -192,12 +192,12 @@ If absent, note to user: "No dossier yet. Say 'update my profile' to start one."
 ## Reading voice context
 
 ```bash
-# Dating-specific texting samples (created by voice refresh - required)
-python3 skills/obsidian/scripts/obsidian.py read "Dating/_meta/voice-samples.md"
+# dating-specific texting samples (created by voice refresh - required)
+python3 skills/obsidian/scripts/obsidian.py read "dating/_meta/voice-samples.md"
 
 # User dossier (created by Update my profile - optional but load if present)
-python3 skills/obsidian/scripts/obsidian.py read "Dating/_meta/my-profile.md"
-
+python3 skills/obsidian/scripts/obsidian.py read "dating/_meta/my-profile.md"
+```
 # Global prose voice profile (created by /voice-setup - read via Read tool, not obsidian)
 # Path: skills/my-voice/references/voice-profile.md
 
@@ -227,16 +227,16 @@ User wants: reply to her latest message
 Voice calibration: pre-loaded - skip Phase 1 and proceed directly to situation assessment.
 
 [ABOUT ME]
-<full contents of Dating/_meta/my-profile.md, or "Not available - user can build one via 'update my profile'">
+<full contents of dating/_meta/my-profile.md, or "Not available - user can build one via 'update my profile'">
 
 [HER PROFILE]
-<full contents of Dating/<Name>/profile.md>
+<full contents of dating/<name-slug>/profile.md>
 
 [CONVERSATION LOG]
-<full contents of Dating/<Name>/conversation.md>
+<full contents of dating/<name-slug>/conversation.md>
 
 [VOICE: texting samples]
-<contents of Dating/_meta/voice-samples.md>
+<contents of dating/_meta/voice-samples.md>
 
 [VOICE: prose baseline]
 <contents of skills/my-voice/references/voice-profile.md, or "not available - run /voice-setup">
@@ -260,33 +260,33 @@ When a name collision is detected (see SKILL.md "Name Collisions"), rename the e
 
 **Step 1 - Capture the existing match's files:**
 ```bash
-python3 skills/obsidian/scripts/obsidian.py read "Dating/<OldName>/profile.md" > "$TMPDIR/profile_rename.md"
-python3 skills/obsidian/scripts/obsidian.py read "Dating/<OldName>/conversation.md" > "$TMPDIR/conversation_rename.md"
+python3 skills/obsidian/scripts/obsidian.py read "dating/<old-name-slug>/profile.md" > "$TMPDIR/profile_rename.md"
+python3 skills/obsidian/scripts/obsidian.py read "dating/<old-name-slug>/conversation.md" > "$TMPDIR/conversation_rename.md"
 ```
 
 **Step 2 - Write to the new disambiguated path:**
 ```bash
-python3 skills/obsidian/scripts/obsidian.py write "Dating/<NewName>/profile.md" --file "$TMPDIR/profile_rename.md"
-python3 skills/obsidian/scripts/obsidian.py write "Dating/<NewName>/conversation.md" --file "$TMPDIR/conversation_rename.md"
+python3 skills/obsidian/scripts/obsidian.py write "dating/<new-name-slug>/profile.md" --file "$TMPDIR/profile_rename.md"
+python3 skills/obsidian/scripts/obsidian.py write "dating/<new-name-slug>/conversation.md" --file "$TMPDIR/conversation_rename.md"
 ```
 
 **Step 3 - Verify the new files exist before deleting the originals:**
 ```bash
-python3 skills/obsidian/scripts/obsidian.py read "Dating/<NewName>/profile.md" --map
-python3 skills/obsidian/scripts/obsidian.py read "Dating/<NewName>/conversation.md" --map
+python3 skills/obsidian/scripts/obsidian.py read "dating/<new-name-slug>/profile.md" --map
+python3 skills/obsidian/scripts/obsidian.py read "dating/<new-name-slug>/conversation.md" --map
 ```
 
 Only proceed to Step 4 if both reads succeed.
 
 **Step 4 - Delete the old files:**
 ```bash
-python3 skills/obsidian/scripts/obsidian.py delete "Dating/<OldName>/profile.md"
-python3 skills/obsidian/scripts/obsidian.py delete "Dating/<OldName>/conversation.md"
+python3 skills/obsidian/scripts/obsidian.py delete "dating/<old-name-slug>/profile.md"
+python3 skills/obsidian/scripts/obsidian.py delete "dating/<old-name-slug>/conversation.md"
 ```
 
 **Step 5 - Update `Display name:` and `Disambiguator type:` in the renamed profile:**
 ```bash
-python3 skills/obsidian/scripts/obsidian.py patch "Dating/<NewName>/profile.md" \
+python3 skills/obsidian/scripts/obsidian.py patch "dating/<new-name-slug>/profile.md" \
   --target-type heading --target "Quick Facts" \
   --operation replace --file "$TMPDIR/quick_facts_rename.md"
 ```
@@ -300,13 +300,13 @@ Write the full updated Quick Facts block to `$TMPDIR/quick_facts_rename.md` firs
 When the user references a name and multiple folders start with that first name:
 
 ```bash
-python3 skills/obsidian/scripts/obsidian.py list Dating/
+python3 skills/obsidian/scripts/obsidian.py list dating/
 ```
 
-Filter the result to folders starting with `<First>` (case-insensitive). For each candidate, read the conversation header to extract context:
+Filter the result to folders matching the normalized/slugified `<First>` (case-insensitive). For each candidate, read the conversation header (top-level heading section containing platform/matched details) to extract context:
 
 ```bash
-python3 skills/obsidian/scripts/obsidian.py read "Dating/<Candidate>/conversation.md" --heading "{{start}}"
+python3 skills/obsidian/scripts/obsidian.py read "dating/<candidate-slug>/conversation.md" --heading "<Candidate> - Conversation Log"
 ```
 
 Parse `**Platform:**`, `**Matched:**`, `**Status:**`, and the highest `## Exchange N` heading for a "last exchange" date. Surface to the user as a one-liner per candidate before asking which they mean.

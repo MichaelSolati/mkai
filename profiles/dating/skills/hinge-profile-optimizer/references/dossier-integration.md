@@ -1,6 +1,6 @@
 # Dossier Integration
 
-How `hinge-profile-optimizer` reads from and writes to the user dossier at `Dating/_meta/my-profile.md`.
+How `hinge-profile-optimizer` reads from and writes to the user dossier at `dating/_meta/my-profile.md`.
 
 ---
 
@@ -60,23 +60,23 @@ After copy is delivered, offer to persist findings. Write only identity-stable f
 
 ```bash
 # Read dossier (Phase 0.5 - silent pre-flight)
-python3 skills/obsidian/scripts/obsidian.py read "Dating/_meta/my-profile.md"
+python3 skills/obsidian/scripts/obsidian.py read "dating/_meta/my-profile.md"
 
 # Check sections present
-python3 skills/obsidian/scripts/obsidian.py read "Dating/_meta/my-profile.md" --map
+python3 skills/obsidian/scripts/obsidian.py read "dating/_meta/my-profile.md" --map
 
 # Append to a section (most Phase 5.5 writes)
-python3 skills/obsidian/scripts/obsidian.py patch "Dating/_meta/my-profile.md" \
+python3 skills/obsidian/scripts/obsidian.py patch "dating/_meta/my-profile.md" \
   --target-type heading --target "<Section Name>" \
   --operation append --file "$TMPDIR/content.md"
 
 # Replace a section (stale facts only)
-python3 skills/obsidian/scripts/obsidian.py patch "Dating/_meta/my-profile.md" \
+python3 skills/obsidian/scripts/obsidian.py patch "dating/_meta/my-profile.md" \
   --target-type heading --target "Quick Facts" \
   --operation replace --file "$TMPDIR/facts.md"
 
 # Create dossier from template if it doesn't exist
 # (Copy template from match-tracker's references/my-profile-template.md first)
-python3 skills/obsidian/scripts/obsidian.py write "Dating/_meta/my-profile.md" \
+python3 skills/obsidian/scripts/obsidian.py write "dating/_meta/my-profile.md" \
   --file "$TMPDIR/my-profile.md"
 ```

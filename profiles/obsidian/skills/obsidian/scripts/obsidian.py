@@ -73,17 +73,21 @@ VALID_STATUSES = {"draft", "active", "review", "archived"}
 VALID_OUTCOMES = {"proposed", "approved", "rejected", "superseded"}
 VALID_PRIORITIES = {"low", "medium", "high", "critical"}
 
-def _normalize_vault_path(path: str, kind: Literal["note", "folder", "auto"] = "auto") -> str:
+def _normalize_vault_path(path: str, kind: Literal["note", "folder", "auto"] = "auto", *, enforce_slug: bool = True) -> str:
     path = path.strip()
     if not path: raise SystemExit("Path must not be empty")
     if any(c in path for c in ("?", "#")): raise SystemExit(f"Path contains URL-breaking characters (?, #): {path!r}")
     for seg in path.split("/"):
         if seg == "..": raise SystemExit(f"Path traversal not allowed: {path!r}")
-    
-    # Enforce slug convention: lowercase and hyphens for spaces/underscores
-    segments = [s.lower().replace(" ", "-").replace("_", "-") for s in path.split("/") if s]
-    path = "/".join(segments)
-    
+
+    if enforce_slug:
+        # Enforce slug convention: lowercase and hyphens for spaces/underscores
+        segments = [s.lower().replace(" ", "-").replace("_", "-") for s in path.split("/") if s]
+        path = "/".join(segments)
+    else:
+        # Just clean up empty segments without changing case
+        path = "/".join(s for s in path.split("/") if s)
+
     if kind == "note":
         if path.endswith("/"): path = path.rstrip("/")
         if "." not in Path(path).name: path = path + ".md"
@@ -263,11 +267,17 @@ class ObsidianClient:
             with urllib.request.urlopen(req, context=self._ssl_ctx, timeout=5) as resp:
                 raw = resp.read().decode()
         except urllib.error.HTTPError as e:
-            raise SystemExit(f"HTTP {e.code}: {e.read().decode()[:500]}")
+            body = e.read().decode()[:500]
+            raise SystemExit(f"HTTP {e.code}: {body}")
         except urllib.error.URLError as e:
             raise SystemExit(f"Connection Error: Obsidian Local REST API is unreachable. Is Obsidian running and the plugin enabled? ({e.reason})")
         except TimeoutError:
             raise SystemExit("Request Timeout: Obsidian took too long to respond. The app might be frozen or closed.")
+        except OSError as e:
+            # socket.timeout on some Python versions surfaces as OSError
+            if "timed out" in str(e).lower():
+                raise SystemExit("Request Timeout: Obsidian took too long to respond. The app might be frozen or closed.")
+            raise SystemExit(f"Connection Error: {e}")
         
         try: return json.loads(raw)
         except: return raw
@@ -275,7 +285,7 @@ class ObsidianClient:
 def cmd_whoami(client: ObsidianClient, _args, cfg: dict, **_kw) -> None:
     path = _get_identity_path(cfg)
     try:
-        note = client.request("GET", f"/vault/{_normalize_vault_path(path, 'note')}", accept="application/vnd.olrapi.note+json")
+        note = client.request("GET", f"/vault/{_normalize_vault_path(path, 'note', enforce_slug=False)}", accept="application/vnd.olrapi.note+json")
         _print_note(note)
     except:
         print(f"[!!] Identity not found: {path}. Run setup.")
@@ -311,7 +321,7 @@ def cmd_read(client: ObsidianClient, args, **_kw) -> None:
     if args.map: accept = "application/vnd.olrapi.document-map+json"
     elif args.heading: headers = {"Target-Type": "heading", "Target": args.heading}
     elif args.frontmatter: headers = {"Target-Type": "frontmatter", "Target": args.frontmatter}
-    res = client.request("GET", f"/vault/{_normalize_vault_path(args.path, 'note')}", accept=accept, headers=headers)
+    res = client.request("GET", f"/vault/{_normalize_vault_path(args.path, 'note', enforce_slug=False)}", accept=accept, headers=headers)
     if args.map: print(json.dumps(res, indent=2))
     else: _print_note(res)
 
@@ -328,13 +338,13 @@ def cmd_append(client: ObsidianClient, args, **_kw):
 
 def cmd_patch(client: ObsidianClient, args, **_kw):
     ct = "application/json" if args.target_type == "frontmatter" else "text/markdown"
-    client.request("PATCH", f"/vault/{_normalize_vault_path(args.path, 'note')}", body=_resolve_content(args), content_type=ct, headers={"Target-Type": args.target_type, "Target": args.target, "Operation": args.operation, "Create-Target-If-Missing": "true" if args.create_if_missing else "false"})
+    client.request("PATCH", f"/vault/{_normalize_vault_path(args.path, 'note', enforce_slug=False)}", body=_resolve_content(args), content_type=ct, headers={"Target-Type": args.target_type, "Target": args.target, "Operation": args.operation, "Create-Target-If-Missing": "true" if args.create_if_missing else "false"})
 
 def cmd_delete(client: ObsidianClient, args, **_kw):
-    client.request("DELETE", f"/vault/{_normalize_vault_path(args.path, 'note')}")
+    client.request("DELETE", f"/vault/{_normalize_vault_path(args.path, 'note', enforce_slug=False)}")
 
 def cmd_list(client: ObsidianClient, args, **_kw):
-    path = f"/vault/{_normalize_vault_path(args.folder, 'folder')}" if args.folder else "/vault/"
+    path = f"/vault/{_normalize_vault_path(args.folder, 'folder', enforce_slug=False)}" if args.folder else "/vault/"
     print(client.request("GET", path))
 
 def cmd_tags(client: ObsidianClient, _args, **_kw):
@@ -352,7 +362,7 @@ def cmd_commands(client: ObsidianClient, args, **_kw):
     else: print(client.request("GET", "/commands/"))
 
 def cmd_open(client: ObsidianClient, args, **_kw):
-    client.request("POST", f"/open/{_normalize_vault_path(args.path, 'note')}{'?newLeaf=true' if args.new_leaf else ''}")
+    client.request("POST", f"/open/{_normalize_vault_path(args.path, 'note', enforce_slug=False)}{'?newLeaf=true' if args.new_leaf else ''}")
 
 def cmd_dql(client: ObsidianClient, args, **_kw):
     print(client.request("POST", "/search/", body=" ".join(args.query), content_type="application/vnd.olrapi.dataview.dql+txt"))
@@ -362,7 +372,7 @@ def cmd_jsonlogic(client: ObsidianClient, args, **_kw):
 
 def cmd_relate(client: ObsidianClient, args, **_kw):
     # Search for notes with similar tags or content to provide 'related' context
-    res = client.request("GET", f"/vault/{_normalize_vault_path(args.path, 'note')}", accept="application/vnd.olrapi.note+json")
+    res = client.request("GET", f"/vault/{_normalize_vault_path(args.path, 'note', enforce_slug=False)}", accept="application/vnd.olrapi.note+json")
     if isinstance(res, dict) and res.get("tags"):
         tags = " OR ".join(res["tags"])
         print(f"Related notes (by tags: {tags}):")
@@ -373,7 +383,7 @@ def cmd_relate(client: ObsidianClient, args, **_kw):
                 print(f"  - {r['filename']}")
 
 def cmd_meta(client: ObsidianClient, args, **_kw):
-    path = _normalize_vault_path(args.path, "note")
+    path = _normalize_vault_path(args.path, "note", enforce_slug=False)
     if args.set:
         for kv in args.set:
             k, v = kv.split("=", 1)

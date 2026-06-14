@@ -9,5 +9,6 @@ skills:
   - match-tracker
   - message-crafter
 
-requires: []
+requires:
+  - obsidian
 conflicts: []

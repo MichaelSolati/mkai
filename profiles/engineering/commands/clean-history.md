@@ -609,8 +609,7 @@ git branch -m clean-history <base>     # or clean-history-partial → <base>
 
 ## Notes
 
-- **No co-author attribution.** Per global CLAUDE.md.
-- **Network-restricted commands** (e.g., `go mod download` during a build verification) should be retried via the `cli-proxy` skill if they fail.
+- **No co-author attribution.**
 - **Knowledge capture**: after a successful run, suggest the user run `/save` to record the commit plan as a `decision` scoped to the repo, especially the cycle-breaking and ownership tie-break choices - those will recur if the command is run again.
 - **Repeatability**: each rerun of `/clean-history` against the same repo should produce a similar plan. Discovery is deterministic; topo-sort is stable when given a stable tie-break (alphabetical by module name). The migration consolidation will only get more aggressive over time as more FIXUPs accumulate - the whole point of running this periodically.
 - **Timezone**: all Phase 2.5 timestamps use the local timezone of the machine running the script. Reruns on a different machine produce different offsets. If reproducibility across machines matters, set `TZ` explicitly before running.
