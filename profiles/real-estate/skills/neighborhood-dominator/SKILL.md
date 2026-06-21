@@ -722,8 +722,8 @@ IF agent provides target buyer profile →
 
 - [ ] All content must reference SPECIFIC local details - never "near great restaurants"
 - [ ] Restaurant names, park names, school names, business names - always specific
-- [ ] Follow ~/.claude/skills/client-memory/references/output-format.md for all output formatting
-- [ ] Save to ./clients/neighborhoods/{neighborhood-slug}/ per ~/.claude/skills/client-memory/SKILL.md
+- [ ] Follow ~/.mkai/profiles/real-estate/skills/client-memory/references/output-format.md for all output formatting
+- [ ] Save to ./clients/neighborhoods/{neighborhood-slug}/ per ~/.mkai/profiles/real-estate/skills/client-memory/SKILL.md
 - [ ] No HARD NO words from brand voice
 - [ ] SEO limits: page titles under 70 chars, meta descriptions under 155 chars
 - [ ] UTM tracking on all links: cyclsales.com/[page]?utm_source=[platform]&utm_medium=social&utm_content=neighborhood-[slug]
@@ -1336,7 +1336,7 @@ IF agent provides target buyer profile →
 
 ## OUTPUT FORMAT
 
-Follow `~/.claude/skills/client-memory/references/output-format.md` for visual formatting. Every output includes:
+Follow `~/.mkai/profiles/real-estate/skills/client-memory/references/output-format.md` for visual formatting. Every output includes:
 
 1. **Header** - NEIGHBORHOOD DOMINATOR
 2. **Data Sources** - what was pulled live vs estimated

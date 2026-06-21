@@ -22,7 +22,7 @@ Resolve the review mode (once, store for all gate spawns this run):
 2. Else read `production/review-mode.txt` → use that value
 3. Else → default to `lean`
 
-See `~/.claude/skills/help/references/director-gates.md` for the full check pattern.
+See `~/.mkai/profiles/game-dev/skills/help/references/director-gates.md` for the full check pattern.
 
 **Argument modes:**
 - **No argument / `full`**: Full guided walkthrough - all sections, start to finish
@@ -346,14 +346,14 @@ After writing the master architecture document, perform an explicit sign-off bef
 
 **Step 1 - Technical Director self-review** (this skill runs as technical-director):
 
-Apply gate **TD-ARCHITECTURE** (`~/.claude/skills/help/references/director-gates.md`) as a self-review. Check all four criteria from that gate definition against the completed document.
+Apply gate **TD-ARCHITECTURE** (`~/.mkai/profiles/game-dev/skills/help/references/director-gates.md`) as a self-review. Check all four criteria from that gate definition against the completed document.
 
 **Review mode check** - apply before spawning LP-FEASIBILITY:
 - `solo` → skip. Note: "LP-FEASIBILITY skipped - Solo mode." Proceed to Phase 8 handoff.
 - `lean` → skip (not a PHASE-GATE). Note: "LP-FEASIBILITY skipped - Lean mode." Proceed to Phase 8 handoff.
 - `full` → spawn as normal.
 
-**Step 2 - Spawn `lead-programmer` via Task using gate LP-FEASIBILITY (`~/.claude/skills/help/references/director-gates.md`):**
+**Step 2 - Spawn `lead-programmer` via Task using gate LP-FEASIBILITY (`~/.mkai/profiles/game-dev/skills/help/references/director-gates.md`):**
 
 Pass: architecture document path, technical requirements baseline summary, ADR list.
 

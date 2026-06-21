@@ -19,12 +19,12 @@ Comprehensive security analysis for Flutter and mobile applications based on OWA
 
 ## Automated Scanners
 
-Four Python scanners cover the most automatable risk categories. Replace `<skill-dir>` with the skill's install path (e.g. `~/.claude/skills/flutter-security`):
+Four Python scanners cover the most automatable risk categories:
 
 ### M1 - Hardcoded Secrets
 
 ```bash
-python3 <skill-dir>/scripts/scan_hardcoded_secrets.py /path/to/project
+python3 ~/.mkai/profiles/flutter/skills/flutter-security/scripts/scan_hardcoded_secrets.py /path/to/project
 ```
 
 Detects API keys, tokens, passwords, AWS credentials, and Firebase keys in Dart code and config files.
@@ -32,7 +32,7 @@ Detects API keys, tokens, passwords, AWS credentials, and Firebase keys in Dart 
 ### M2 - Dependency Vulnerabilities
 
 ```bash
-python3 <skill-dir>/scripts/check_dependencies.py /path/to/project
+python3 ~/.mkai/profiles/flutter/skills/flutter-security/scripts/check_dependencies.py /path/to/project
 ```
 
 Analyzes `pubspec.yaml` for outdated packages, `any` version constraints, and known CVEs.
@@ -40,7 +40,7 @@ Analyzes `pubspec.yaml` for outdated packages, `any` version constraints, and kn
 ### M5 - Network Security
 
 ```bash
-python3 <skill-dir>/scripts/check_network_security.py /path/to/project
+python3 ~/.mkai/profiles/flutter/skills/flutter-security/scripts/check_network_security.py /path/to/project
 ```
 
 Checks HTTP vs HTTPS usage, certificate pinning, Android Network Security Config, and iOS ATS settings.
@@ -48,7 +48,7 @@ Checks HTTP vs HTTPS usage, certificate pinning, Android Network Security Config
 ### M9 - Insecure Storage
 
 ```bash
-python3 <skill-dir>/scripts/analyze_storage_security.py /path/to/project
+python3 ~/.mkai/profiles/flutter/skills/flutter-security/scripts/analyze_storage_security.py /path/to/project
 ```
 
 Identifies unencrypted SharedPreferences, plaintext file storage, unencrypted databases, and insecure backup configurations.
@@ -79,10 +79,10 @@ Quick pre-release check?
 
 ```bash
 # Run all automated scanners from the project root
-python3 <skill-dir>/scripts/scan_hardcoded_secrets.py .
-python3 <skill-dir>/scripts/check_dependencies.py .
-python3 <skill-dir>/scripts/check_network_security.py .
-python3 <skill-dir>/scripts/analyze_storage_security.py .
+python3 ~/.mkai/profiles/flutter/skills/flutter-security/scripts/scan_hardcoded_secrets.py .
+python3 ~/.mkai/profiles/flutter/skills/flutter-security/scripts/check_dependencies.py .
+python3 ~/.mkai/profiles/flutter/skills/flutter-security/scripts/check_network_security.py .
+python3 ~/.mkai/profiles/flutter/skills/flutter-security/scripts/analyze_storage_security.py .
 
 # Outputs produced:
 #   owasp_m1_secrets_scan.json

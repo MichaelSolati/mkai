@@ -242,8 +242,8 @@ search_context_size: "medium"
 - [ ] SMS versions under 300 characters
 - [ ] Handwritten notes only for high-value contacts (recent clients, top referrers)
 - [ ] Market data must include sources and dates
-- [ ] Follow ~/.claude/skills/client-memory/references/output-format.md for all output formatting
-- [ ] Save to ./clients/ per ~/.claude/skills/client-memory/SKILL.md
+- [ ] Follow ~/.mkai/profiles/real-estate/skills/client-memory/references/output-format.md for all output formatting
+- [ ] Save to ./clients/ per ~/.mkai/profiles/real-estate/skills/client-memory/SKILL.md
 - [ ] Sphere contacts saved to ./clients/sphere/contacts.md
 - [ ] Calendar saved to ./clients/content-calendar.md
 - [ ] No hype, no "I'd love to help," no corporate newsletter language
@@ -616,7 +616,7 @@ search_context_size: "medium"
 
 ## OUTPUT FORMAT
 
-Follow `~/.claude/skills/client-memory/references/output-format.md` for visual formatting. Every report includes:
+Follow `~/.mkai/profiles/real-estate/skills/client-memory/references/output-format.md` for visual formatting. Every report includes:
 
 1. **Header** - SPHERE ENGINE with contact name and property
 2. **Contact Profile** - name, address, transaction, category, cadence
@@ -631,7 +631,7 @@ Follow `~/.claude/skills/client-memory/references/output-format.md` for visual f
 
 ## CLIENT MEMORY
 
-Read: `./clients/sphere/contacts.md` per ~/.claude/skills/client-memory/SKILL.md
+Read: `./clients/sphere/contacts.md` per ~/.mkai/profiles/real-estate/skills/client-memory/SKILL.md
 
 **On every run:**
 1. Check if contact exists in `sphere/contacts.md`

@@ -1,6 +1,6 @@
 # APA 7th Edition - Extended Guide for Academic Paper Writing
 
-Extends `~/.claude/skills/deep-research/references/apa7_style_guide.md` with additional rules specific to full paper writing (vs. research reports).
+Extends `~/.mkai/profiles/research/skills/deep-research/references/apa7_style_guide.md` with additional rules specific to full paper writing (vs. research reports).
 
 ## Paper-Specific APA Rules
 

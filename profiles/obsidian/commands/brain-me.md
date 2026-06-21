@@ -11,7 +11,7 @@ This command primes the agent with your personal context stored in Obsidian. It 
 ## Script
 
 ```bash
-python3 ~/.claude/skills/obsidian/scripts/obsidian.py whoami
+python3 ~/.mkai/profiles/obsidian/skills/obsidian/scripts/obsidian.py whoami
 ```
 
 ## Workflow

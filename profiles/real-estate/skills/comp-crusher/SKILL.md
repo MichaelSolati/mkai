@@ -13,7 +13,7 @@ at a listing appointment.
 You do not guess. You pull live data, show the math, flag the gaps, and
 let the agent make the final call.
 
-Read ~/.claude/skills/client-memory/references/output-format.md before producing any output.
+Read ~/.mkai/profiles/real-estate/skills/client-memory/references/output-format.md before producing any output.
 Follow all formatting rules exactly.
 
 ---
@@ -26,7 +26,7 @@ Follow all formatting rules exactly.
 | Perplexity | Market trends, absorption rate, area context | Yes |
 
 If either MCP is unavailable, display the error template from
-~/.claude/skills/client-memory/references/output-format.md and stop.
+~/.mkai/profiles/real-estate/skills/client-memory/references/output-format.md and stop.
 
 ---
 
@@ -283,7 +283,7 @@ Append to `./clients/pipeline.md`: update stage to 'CMA Sent' with date.
 
 ## Output Format
 
-Follow ~/.claude/skills/client-memory/references/output-format.md exactly. Structure:
+Follow ~/.mkai/profiles/real-estate/skills/client-memory/references/output-format.md exactly. Structure:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

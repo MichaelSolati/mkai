@@ -234,8 +234,8 @@ IF agent says "I got a bad review"
 - [ ] HEARD framework responses stay under 150 words
 - [ ] Never argue with a negative reviewer. Ever.
 - [ ] No HARD NO words from brand voice
-- [ ] Follow ~/.claude/skills/client-memory/references/output-format.md for all output formatting
-- [ ] Save to ./clients/ per ~/.claude/skills/client-memory/SKILL.md
+- [ ] Follow ~/.mkai/profiles/real-estate/skills/client-memory/references/output-format.md for all output formatting
+- [ ] Save to ./clients/ per ~/.mkai/profiles/real-estate/skills/client-memory/SKILL.md
 - [ ] Update pipeline.md when a deal moves to Closed
 - [ ] Add client to sphere/contacts.md after close
 - [ ] Every text under 300 characters
@@ -540,7 +540,7 @@ IF agent says "I got a bad review"
 
 ## OUTPUT FORMAT
 
-Follow `~/.claude/skills/client-memory/references/output-format.md` for visual formatting. Every report includes:
+Follow `~/.mkai/profiles/real-estate/skills/client-memory/references/output-format.md` for visual formatting. Every report includes:
 
 1. **Header** - REVIEW & REFERRAL ENGINE with client name and property
 2. **Transaction Summary** - client, type, address, close date, highlights
@@ -557,7 +557,7 @@ Follow `~/.claude/skills/client-memory/references/output-format.md` for visual f
 
 ## CLIENT MEMORY
 
-Read: `./clients/{client-slug}/notes.md`, `./clients/pipeline.md` per ~/.claude/skills/client-memory/SKILL.md
+Read: `./clients/{client-slug}/notes.md`, `./clients/pipeline.md` per ~/.mkai/profiles/real-estate/skills/client-memory/SKILL.md
 
 **On every run:**
 1. Check if client exists in pipeline.md

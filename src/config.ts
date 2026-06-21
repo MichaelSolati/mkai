@@ -6,20 +6,37 @@ import type {Platform} from './types';
 
 const HOME = os.homedir();
 
+function pkgRoot(): string {
+  const thisFile = fileURLToPath(import.meta.url);
+  return path.resolve(path.dirname(thisFile), '..');
+}
+
+function mkaiDataDir(): string {
+  return path.join(pkgRoot(), '.data');
+}
+
 export const paths = {
   claudeDir: path.join(HOME, '.claude'),
   geminiDir: path.join(HOME, '.gemini'),
-  stateDir: path.join(HOME, '.mkai'),
-  stateFile: path.join(HOME, '.mkai', 'state.json'),
-  stashDir: path.join(HOME, '.mkai', 'stash'),
-  configStashDir: path.join(HOME, '.mkai', 'stash', 'configs'),
-  originalsStashDir: path.join(HOME, '.mkai', 'stash', 'originals'),
+  get stateDir() {
+    return mkaiDataDir();
+  },
+  get stateFile() {
+    return path.join(mkaiDataDir(), 'state.json');
+  },
+  get stashDir() {
+    return path.join(mkaiDataDir(), 'stash');
+  },
+  get configStashDir() {
+    return path.join(mkaiDataDir(), 'stash', 'configs');
+  },
+  get originalsStashDir() {
+    return path.join(mkaiDataDir(), 'stash', 'originals');
+  },
 };
 
 export function profilesDir(): string {
-  const thisFile = fileURLToPath(import.meta.url);
-  const root = path.resolve(path.dirname(thisFile), '..');
-  return path.join(root, 'profiles');
+  return path.join(pkgRoot(), 'profiles');
 }
 
 export function resolveTarget(

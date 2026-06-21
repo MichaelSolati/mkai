@@ -17,8 +17,8 @@ description: "Research expired listings, FSBOs, and circle prospecting opportuni
 
 - **Firecrawl MCP** -- scrapes original listings from Redfin/Zillow/Realtor.com
 - **Perplexity MCP** -- pulls market context, comps, and neighborhood data
-- Read `~/.claude/skills/client-memory/references/output-format.md` before producing any output
-- Read `~/.claude/skills/client-memory/SKILL.md` for save locations
+- Read `~/.mkai/profiles/real-estate/skills/client-memory/references/output-format.md` before producing any output
+- Read `~/.mkai/profiles/real-estate/skills/client-memory/SKILL.md` for save locations
 
 ---
 
@@ -1074,8 +1074,8 @@ Input: "1847 Lakewood Blvd, Dallas TX 75214" -- expired
 - All scripts must feel like a conversation, not a pitch
 - Do not invent listing data -- if Firecrawl cannot find the listing,
   note what is missing and work with available data
-- All output follows `~/.claude/skills/client-memory/references/output-format.md`
-- All saves follow `~/.claude/skills/client-memory/SKILL.md`
+- All output follows `~/.mkai/profiles/real-estate/skills/client-memory/references/output-format.md`
+- All saves follow `~/.mkai/profiles/real-estate/skills/client-memory/SKILL.md`
 
 ---
 

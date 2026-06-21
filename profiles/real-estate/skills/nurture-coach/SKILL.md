@@ -514,7 +514,7 @@ Stop the active cadence when you see:
 - [ ] If /lead-recon data is available, use specific property and market details in the messages
 - [ ] All text/SMS touches MUST be under 300 characters. Count before delivering.
 - [ ] If a text touch exceeds 300 characters, split into 2 messages or shorten. The first message should hook, the second should CTA.
-- [ ] Follow ~/.claude/skills/client-memory/references/output-format.md for all terminal output formatting
+- [ ] Follow ~/.mkai/profiles/real-estate/skills/client-memory/references/output-format.md for all terminal output formatting
 - [ ] Save full sequence to ./clients/{slug}/nurture-sequence.md
 - [ ] Append entry to ./clients/pipeline.md with updated stage and last touch
 
@@ -522,7 +522,7 @@ Stop the active cadence when you see:
 
 ## OUTPUT FORMAT
 
-Follow `~/.claude/skills/client-memory/references/output-format.md` for all formatting rules. Structure the output as:
+Follow `~/.mkai/profiles/real-estate/skills/client-memory/references/output-format.md` for all formatting rules. Structure the output as:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -1097,7 +1097,7 @@ Before delivering, verify:
 - [ ] Are all text/SMS touches under 300 characters? (If over, split or shorten)
 - [ ] Is the sequence saved to ./clients/{slug}/nurture-sequence.md?
 - [ ] Is pipeline.md updated?
-- [ ] Does the output follow ~/.claude/skills/client-memory/references/output-format.md?
+- [ ] Does the output follow ~/.mkai/profiles/real-estate/skills/client-memory/references/output-format.md?
 - [ ] No words from the HARD NO list?
 - [ ] Would these messages feel helpful if YOU received them as a homeowner?
 

@@ -14,7 +14,7 @@
     "test": "node --experimental-vm-modules node_modules/.bin/vitest",
     "lint": "gts lint",
     "fix": "gts fix",
-    "postinstall": "npm run build && npm link --ignore-scripts"
+    "postinstall": "npm run build && node scripts/setup.js && npm link --ignore-scripts"
   },
   "author": "Michael Solati <mkslt04@gmail.com>",
   "repository": {

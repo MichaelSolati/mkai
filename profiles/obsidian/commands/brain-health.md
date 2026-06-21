@@ -11,5 +11,5 @@ This command crawls your vault to find notes that aren't linked to (orphans) or 
 ## Script
 
 ```bash
-python3 ~/.claude/skills/obsidian/scripts/obsidian.py link-health
+python3 ~/.mkai/profiles/obsidian/skills/obsidian/scripts/obsidian.py link-health
 ```

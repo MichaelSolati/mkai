@@ -16,7 +16,7 @@ Resolve the review mode (once, store for all gate spawns this run):
 2. Else read `production/review-mode.txt` → use that value
 3. Else → default to `lean`
 
-See `~/.claude/skills/help/references/director-gates.md` for the full check pattern.
+See `~/.mkai/profiles/game-dev/skills/help/references/director-gates.md` for the full check pattern.
 
 A system name or retrofit path is **required**. If missing:
 
@@ -689,11 +689,11 @@ the source of truth). Verify:
 - `lean` → skip (not a PHASE-GATE). Note: "CD-GDD-ALIGN skipped - Lean mode." Proceed to Step 5b.
 - `full` → spawn as normal.
 
-Before finalizing the GDD, spawn `creative-director` via Task using gate **CD-GDD-ALIGN** (`~/.claude/skills/help/references/director-gates.md`).
+Before finalizing the GDD, spawn `creative-director` via Task using gate **CD-GDD-ALIGN** (`~/.mkai/profiles/game-dev/skills/help/references/director-gates.md`).
 
 Pass: completed GDD file path, game pillars (from `design/gdd/game-concept.md` or `design/gdd/game-pillars.md`), MDA aesthetics target.
 
-Handle verdict per the standard rules in `~/.claude/skills/help/references/director-gates.md`. After resolution, record the verdict in the GDD Status header:
+Handle verdict per the standard rules in `~/.mkai/profiles/game-dev/skills/help/references/director-gates.md`. After resolution, record the verdict in the GDD Status header:
 `> **Creative Director Review (CD-GDD-ALIGN)**: APPROVED [date] / CONCERNS (accepted) [date] / REVISED [date]`
 
 ---

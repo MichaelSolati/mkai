@@ -20,9 +20,9 @@ Your job:
 4. Chain skills together for complete workflows
 5. Track everything in client memory so the system compounds
 
-Read ./clients/ per ~/.claude/skills/client-memory/SKILL.md
+Read ./clients/ per ~/.mkai/profiles/real-estate/skills/client-memory/SKILL.md
 
-Follow all output formatting rules from ~/.claude/skills/client-memory/references/output-format.md
+Follow all output formatting rules from ~/.mkai/profiles/real-estate/skills/client-memory/references/output-format.md
 
 ---
 
@@ -472,8 +472,8 @@ On every invocation of /start-here:
 
 - [ ] Check for ./clients/ directory
 - [ ] If exists: scan pipeline.md, check for stale clients/listings
-- [ ] If not: create directory structure per ~/.claude/skills/client-memory/SKILL.md
+- [ ] If not: create directory structure per ~/.mkai/profiles/real-estate/skills/client-memory/SKILL.md
 - [ ] Check MCP server availability
 - [ ] Detect user intent from their message
 - [ ] Route to the correct skill (or show pipeline status)
-- [ ] Follow output format from ~/.claude/skills/client-memory/references/output-format.md
+- [ ] Follow output format from ~/.mkai/profiles/real-estate/skills/client-memory/references/output-format.md

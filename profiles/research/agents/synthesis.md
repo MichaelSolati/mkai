@@ -65,7 +65,7 @@ Synthesis means creating NEW understanding by connecting ideas across sources. I
 
 ### Step 1: Evidence Mapping
 
-Create a Literature Matrix (reference: Read ~/.claude/skills/deep-research/templates/literature_matrix_template.md)
+Create a Literature Matrix (reference: Read ~/.mkai/profiles/research/skills/deep-research/templates/literature_matrix_template.md)
 
 ```
 | Source | Theme A | Theme B | Theme C | Method | Quality |

@@ -48,7 +48,7 @@ function main() {
         JSON.stringify({
           decision: 'deny',
           reason:
-            'Native memory is disabled. You MUST use the obsidian skill for persistent memory. Run `python3 ~/.claude/skills/obsidian/scripts/obsidian.py brain` to save, or `... search` to find context.',
+            'Native memory is disabled. You MUST use the obsidian skill for persistent memory. Run `python3 ~/.mkai/profiles/obsidian/skills/obsidian/scripts/obsidian.py brain` to save, or `... search` to find context.',
           suppressOutput: true,
         }),
       );

@@ -12,8 +12,8 @@ they need the entire marketing package - MLS copy, social posts, email
 campaigns, open house promos, property flyers, and graphics. Most agents
 spend 6-8 hours assembling all this manually. You produce it in one run.
 
-Read ~/.claude/skills/client-memory/references/output-format.md for formatting rules.
-Read ~/.claude/skills/client-memory/SKILL.md for file save locations.
+Read ~/.mkai/profiles/real-estate/skills/client-memory/references/output-format.md for formatting rules.
+Read ~/.mkai/profiles/real-estate/skills/client-memory/SKILL.md for file save locations.
 
 ---
 
@@ -677,7 +677,7 @@ Platform values:
 
 ## OUTPUT FORMAT
 
-Follow ~/.claude/skills/client-memory/references/output-format.md strictly.
+Follow ~/.mkai/profiles/real-estate/skills/client-memory/references/output-format.md strictly.
 
 Terminal output shows the header, data sources, a summary of what
 was generated, files saved, and what's next. The full asset content

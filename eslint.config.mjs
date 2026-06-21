@@ -15,7 +15,7 @@ export default defineConfig([
     ],
   },
   {
-    files: ['profiles/**/*.js'],
+    files: ['profiles/**/*.js', 'scripts/**/*.js'],
     languageOptions: {
       globals: {
         process: 'readonly',

@@ -11,5 +11,5 @@ This command provides a summary of your vault's structure, showing note counts b
 ## Script
 
 ```bash
-python3 ~/.claude/skills/obsidian/scripts/obsidian.py vault-status
+python3 ~/.mkai/profiles/obsidian/skills/obsidian/scripts/obsidian.py vault-status
 ```

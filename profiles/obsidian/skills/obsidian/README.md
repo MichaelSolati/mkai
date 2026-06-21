@@ -45,7 +45,7 @@ Run the setup command to verify connectivity and build your initial persona:
 ### Knowledge Capture
 Use the `brain` skill directly (or via agent automation) to save notes:
 ```bash
-python3 obsidian.py brain decision|pattern|mistake|learning "content" --scope global|work|dating|personal [--title "Title"]
+python3 ~/.mkai/profiles/obsidian/skills/obsidian/scripts/obsidian.py brain decision|pattern|mistake|learning "content" --scope global|work|dating|personal [--title "Title"]
 ```
 *Note: All paths and filenames are automatically converted to **lowercase-slugs** (e.g., "My Project" → "my-project").*
 

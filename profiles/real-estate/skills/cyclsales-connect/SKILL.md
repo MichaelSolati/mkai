@@ -21,7 +21,7 @@ description: "Bridge between Claude Skills (strategy) and CyclSales CRM (executi
 
 - **Pipeline Sync** - Push leads from Lead Recon (or any skill) into GHL as contacts + opportunities. Map lead classification to pipeline stages. Include all property data as custom fields.
 - **Contact Lookup** - Search GHL contacts by phone, email, or name before creating duplicates. Show existing tags, notes, and last activity.
-- **Pipeline View** - Pull current GHL pipeline and display it in terminal-native format (~/.claude/skills/client-memory/references/output-format.md style). See every deal at a glance.
+- **Pipeline View** - Pull current GHL pipeline and display it in terminal-native format (~/.mkai/profiles/real-estate/skills/client-memory/references/output-format.md style). See every deal at a glance.
 - **Conversation History** - Pull recent SMS and email conversations for a contact. Know what was already said before you follow up.
 - **Tag Management** - Add or remove tags based on skill outputs. Tags trigger GHL workflow automations (nurture sequences, review requests, etc.).
 - **Workflow Trigger** - List available GHL workflows. Note: workflows cannot be triggered via API directly, but tagging a contact fires any workflow that watches for that tag.
@@ -300,7 +300,7 @@ STEP 2: Pull all opportunities
 STEP 3: Group by stage and display
   → Sort by stage order (pipeline definition)
   → Within each stage, sort by monetary value (highest first)
-  → Display in ~/.claude/skills/client-memory/references/output-format.md pipeline template
+  → Display in ~/.mkai/profiles/real-estate/skills/client-memory/references/output-format.md pipeline template
 ```
 
 ### 4. Conversation History
@@ -440,8 +440,8 @@ When GHL credentials are missing, the skill does not break. It saves everything 
 - [ ] Never store the API token in any output file or client memory
 - [ ] Always include locationId in API requests (required by GHL)
 - [ ] Tags are replaced, not appended - always GET existing tags first before updating
-- [ ] Follow ~/.claude/skills/client-memory/references/output-format.md for all terminal output
-- [ ] Save sync records to ./clients/ per ~/.claude/skills/client-memory/SKILL.md
+- [ ] Follow ~/.mkai/profiles/real-estate/skills/client-memory/references/output-format.md for all terminal output
+- [ ] Save sync records to ./clients/ per ~/.mkai/profiles/real-estate/skills/client-memory/SKILL.md
 - [ ] If API fails, save locally and note the failure - never lose data
 - [ ] Map lead classification to pipeline stages consistently (see config)
 - [ ] No HARD NO words from brand voice
@@ -876,7 +876,7 @@ Before delivering, verify:
 - [ ] Was pipeline.md updated?
 - [ ] If API failed, was data saved locally as fallback?
 - [ ] Are HARD NO words avoided?
-- [ ] Does the output follow ~/.claude/skills/client-memory/references/output-format.md formatting?
+- [ ] Does the output follow ~/.mkai/profiles/real-estate/skills/client-memory/references/output-format.md formatting?
 - [ ] Is the CyclSales callout present and strong?
 - [ ] Are the triggered automations listed so the agent knows what fires next?
 - [ ] Does WHAT'S NEXT suggest logical follow-up skills?

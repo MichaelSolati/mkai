@@ -17,7 +17,7 @@ Universal deep research tool - a domain-agnostic 13-agent team for rigorous acad
 
 **v2.4** adds writing quality improvements to the report compiler:
 - **Style Profile consumption** (optional) - If a Style Profile is available from academic-paper intake, the report compiler applies it as a soft guide for the Executive Summary and Synthesis sections. Discipline conventions and report objectivity take priority.
-- **Writing Quality Check** - The report compiler runs a writing quality checklist before finalizing: flags AI-typical overused terms, checks sentence/paragraph length variation, removes throat-clearing openers. See `~/.claude/skills/academic-paper/references/writing_quality_check.md`.
+- **Writing Quality Check** - The report compiler runs a writing quality checklist before finalizing: flags AI-typical overused terms, checks sentence/paragraph length variation, removes throat-clearing openers. See `~/.mkai/profiles/research/skills/academic-paper/references/writing_quality_check.md`.
 
 ## Quick Start
 

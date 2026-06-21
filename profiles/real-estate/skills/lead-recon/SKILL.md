@@ -403,8 +403,8 @@ DEFAULT → Fast Mode
 - [ ] Always show data sources and flag estimated vs confirmed data
 - [ ] Speed responses must feel like a human texted it - no corporate language
 - [ ] No "Thank you for reaching out," "I'd love to help you," "Don't hesitate to reach out"
-- [ ] Follow ~/.claude/skills/client-memory/references/output-format.md for all output formatting
-- [ ] Save to ./clients/ per ~/.claude/skills/client-memory/SKILL.md
+- [ ] Follow ~/.mkai/profiles/real-estate/skills/client-memory/references/output-format.md for all output formatting
+- [ ] Save to ./clients/ per ~/.mkai/profiles/real-estate/skills/client-memory/SKILL.md
 - [ ] No HARD NO words from brand voice (no "game-changing," "best practices," "at the end of the day," "leverage," "utilize," "circle back," "touch base")
 - [ ] Fast Mode target: 60 seconds. Deep Mode target: 5 minutes. Do not exceed.
 - [ ] Always end speed responses with a question
@@ -855,7 +855,7 @@ DEFAULT → Fast Mode
 
 ## OUTPUT FORMAT
 
-Follow `~/.claude/skills/client-memory/references/output-format.md` for visual formatting. Every report includes:
+Follow `~/.mkai/profiles/real-estate/skills/client-memory/references/output-format.md` for visual formatting. Every report includes:
 
 **Fast Mode delivers:**
 1. **Header** - LEAD RECON REPORT (Fast or Deep mode noted)

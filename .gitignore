@@ -1,6 +1,4 @@
 node_modules/
 dist/
-
-# State and stash directories (contain secrets)
-~/.claude-profiles/
+.data/
 config.yaml

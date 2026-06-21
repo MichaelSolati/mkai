@@ -104,7 +104,7 @@ Assemble full context and delegate to message-crafter.
    If `my-profile.md` is absent → note "no user dossier yet - say 'update my profile' to start one" and proceed without it.
 2. Load voice context (see `references/voice-handoff.md`):
    - Try to read `dating/_meta/voice-samples.md`; if absent, run **Voice refresh** first
-   - Try to read `skills/my-voice/references/voice-profile.md`; absent = proceed without, note "run /voice-setup to enrich"
+   - Try to read `~/.mkai/profiles/writing/skills/my-voice/references/voice-profile.md`; absent = proceed without, note "run /voice-setup to enrich"
 3. Assess conversation stage from the thread (opener / early-game / mid-game / date-seed / recovery / logistics).
 4. Invoke `message-crafter` via Skill tool with `args` containing the full assembled context block (see `references/voice-handoff.md` for exact format).
 5. Present message-crafter's options verbatim, including its rationale.

@@ -5,11 +5,9 @@ import path from 'node:path';
 
 function main() {
   try {
-    // Attempt to run obsidian whoami
-    // We use the home directory to find the skill script as per the original shell script
     const scriptPath = path.join(
       os.homedir(),
-      '.claude/skills/obsidian/scripts/obsidian.py',
+      '.mkai/profiles/obsidian/skills/obsidian/scripts/obsidian.py',
     );
     const output = execSync(`python3 ${scriptPath} whoami`, {
       encoding: 'utf-8',

@@ -17,8 +17,8 @@ they will run for the seller's home.
 That is the difference. The agent who shows the work before they get
 hired is the agent who gets hired.
 
-Read ./clients/ per ~/.claude/skills/client-memory/SKILL.md
-Follow all output formatting rules from ~/.claude/skills/client-memory/references/output-format.md
+Read ./clients/ per ~/.mkai/profiles/real-estate/skills/client-memory/SKILL.md
+Follow all output formatting rules from ~/.mkai/profiles/real-estate/skills/client-memory/references/output-format.md
 
 ---
 
@@ -76,7 +76,7 @@ IF ./clients/{slug}/comp-analysis.md exists
    -> Note: "Using comp data from [date]"
 
 IF no comp data exists for this address
-   -> Show gap notice (per ~/.claude/skills/client-memory/references/output-format.md)
+   -> Show gap notice (per ~/.mkai/profiles/real-estate/skills/client-memory/references/output-format.md)
    -> Recommend: /comp-crusher first (~5 min)
    -> Offer: "Continue without" - presentation will have
       placeholder pricing and no net sheet
@@ -276,7 +276,7 @@ After the data, include a plain-language translation:
 - Pull via Perplexity if no cache or cache > 30 days
 - If no data available, state: "Market data not available
   for this ZIP. Recommend running /market-intel first."
-- Always show data source indicator per ~/.claude/skills/client-memory/references/output-format.md
+- Always show data source indicator per ~/.mkai/profiles/real-estate/skills/client-memory/references/output-format.md
 
 ---
 
@@ -706,7 +706,7 @@ about longer timelines.
 The presentation is saved as a single markdown file at
 `./clients/{slug}/listing-presentation.md`
 
-Terminal output follows standard ~/.claude/skills/client-memory/references/output-format.md structure:
+Terminal output follows standard ~/.mkai/profiles/real-estate/skills/client-memory/references/output-format.md structure:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

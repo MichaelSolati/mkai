@@ -7,21 +7,21 @@ How match-tracker layers voice sources and user context, then passes them to mes
 ## The Sources
 
 ### 1. Global prose voice profile
-**Path:** `skills/my-voice/references/voice-profile.md`
+**Path:** `~/.mkai/profiles/writing/skills/my-voice/references/voice-profile.md`
 **Created by:** `/voice-setup` skill
 **What it contains:** Rhythm, vocabulary fingerprint, anti-AI-slop patterns, structural preferences - derived from longer writing samples.
 **Role in messaging:** Baseline identity signal. Tells message-crafter *who this person is* tonally - their sense of humor, how they think, what's authentic to them. Prevents generic dating-coach output.
 **Status:** May not exist (gitignored, generated locally). Proceed without it; note to user.
 
 ### 2. Prose sample excerpts
-**Path:** `skills/my-voice/references/sample-excerpts.md`
+**Path:** `~/.mkai/profiles/writing/skills/my-voice/references/sample-excerpts.md`
 **Created by:** `/voice-setup` skill
 **What it contains:** Real excerpts from the user's own writing - few-shot examples that anchor the prose voice at the sentence level.
 **Role in messaging:** Lets message-crafter calibrate format and vocabulary against actual examples, not just an abstract profile. Stronger signal than the profile alone.
 **Status:** May not exist. Proceed without it; note to user to run `/voice-setup`.
 
 ### 3. Anti-slop baselines
-**Paths:** `skills/my-voice/references/anti-slop-phrases.md` + `skills/my-voice/references/anti-slop-structures.md`
+**Paths:** `~/.mkai/profiles/writing/skills/my-voice/references/anti-slop-phrases.md` + `~/.mkai/profiles/writing/skills/my-voice/references/anti-slop-structures.md`
 **Created by:** `/voice-setup` skill (static baselines, may be present even without a full voice profile)
 **What they contain:** Universal banned phrases and structural anti-patterns that make writing read as AI-generated.
 **Role in messaging:** Hard guardrails for message-crafter - applied on top of everything else.
@@ -84,21 +84,21 @@ Not available. User can build one via match-tracker's "update my profile" flow.
 {full contents of Dating/_meta/voice-samples.md}
 
 [VOICE: prose baseline]
-{full contents of skills/my-voice/references/voice-profile.md}
+{full contents of ~/.mkai/profiles/writing/skills/my-voice/references/voice-profile.md}
 - OR -
 [VOICE: prose baseline]
 Not available. Run /voice-setup to generate a global voice profile.
 
 [VOICE: prose excerpts]
-{full contents of skills/my-voice/references/sample-excerpts.md}
+{full contents of ~/.mkai/profiles/writing/skills/my-voice/references/sample-excerpts.md}
 - OR -
 [VOICE: prose excerpts]
 Not available.
 
 [VOICE: anti-slop baseline]
-{full contents of skills/my-voice/references/anti-slop-phrases.md}
+{full contents of ~/.mkai/profiles/writing/skills/my-voice/references/anti-slop-phrases.md}
 ---
-{full contents of skills/my-voice/references/anti-slop-structures.md}
+{full contents of ~/.mkai/profiles/writing/skills/my-voice/references/anti-slop-structures.md}
 - OR -
 [VOICE: anti-slop baseline]
 Not available.

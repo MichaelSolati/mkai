@@ -571,8 +571,8 @@ IF cap rate is below area average
 - [ ] Never present appreciation as guaranteed - it is speculative
 - [ ] Never hide negative cash flow - if it loses money, say so
 - [ ] Always recommend CPA and attorney for tax and legal questions
-- [ ] Follow ~/.claude/skills/client-memory/references/output-format.md for all output formatting
-- [ ] Save to ./clients/ per ~/.claude/skills/client-memory/SKILL.md
+- [ ] Follow ~/.mkai/profiles/real-estate/skills/client-memory/references/output-format.md for all output formatting
+- [ ] Save to ./clients/ per ~/.mkai/profiles/real-estate/skills/client-memory/SKILL.md
 - [ ] No HARD NO words from brand voice
 - [ ] Mortgage calculations must use correct amortization math (not simplified)
 - [ ] Cap rate calculation does NOT include mortgage (this is a common mistake)
@@ -988,7 +988,7 @@ IF cap rate is below area average
 
 ## OUTPUT FORMAT
 
-Follow `~/.claude/skills/client-memory/references/output-format.md` for visual formatting. Every report includes:
+Follow `~/.mkai/profiles/real-estate/skills/client-memory/references/output-format.md` for visual formatting. Every report includes:
 
 1. **Header** - INVESTMENT ANALYSIS with address
 2. **Data Sources** - what was pulled live vs cached vs estimated
@@ -1012,14 +1012,14 @@ Follow `~/.claude/skills/client-memory/references/output-format.md` for visual f
 
 ## CLIENT MEMORY
 
-Read: `./clients/{client-slug}/lead-recon.md`, `./clients/market-profiles/{zip}.md` per ~/.claude/skills/client-memory/SKILL.md
+Read: `./clients/{client-slug}/lead-recon.md`, `./clients/market-profiles/{zip}.md` per ~/.mkai/profiles/real-estate/skills/client-memory/SKILL.md
 
 **On every run:**
 1. Check for existing property data in `./clients/{address-slug}/`
    - If lead-recon exists: use property data, skip Firecrawl scrape
    - If comp-analysis exists: use for ARV baseline
 2. Check for cached market profile in `./clients/market-profiles/{zip}.md`
-   - Apply freshness rules per ~/.claude/skills/client-memory/SKILL.md
+   - Apply freshness rules per ~/.mkai/profiles/real-estate/skills/client-memory/SKILL.md
 3. Save investment analysis to `./clients/{address-slug}/investment-analysis.md`
 4. Update or create market profile cache
 5. Append to `./clients/pipeline.md` with investor client info

@@ -313,14 +313,14 @@ For items that can't be automatically verified, **ask the user**:
 
 (Review mode was resolved in Phase 1. Use that stored value here.)
 
-Before generating the final verdict, spawn all four directors as **parallel subagents** via Task using the parallel gate protocol from `~/.claude/skills/help/references/director-gates.md`. Issue all four Task calls simultaneously - do not wait for one before starting the next.
+Before generating the final verdict, spawn all four directors as **parallel subagents** via Task using the parallel gate protocol from `~/.mkai/profiles/game-dev/skills/help/references/director-gates.md`. Issue all four Task calls simultaneously - do not wait for one before starting the next.
 
 **Spawn in parallel:**
 
-1. **`creative-director`** - gate **CD-PHASE-GATE** (`~/.claude/skills/help/references/director-gates.md`)
-2. **`technical-director`** - gate **TD-PHASE-GATE** (`~/.claude/skills/help/references/director-gates.md`)
-3. **`producer`** - gate **PR-PHASE-GATE** (`~/.claude/skills/help/references/director-gates.md`)
-4. **`art-director`** - gate **AD-PHASE-GATE** (`~/.claude/skills/help/references/director-gates.md`)
+1. **`creative-director`** - gate **CD-PHASE-GATE** (`~/.mkai/profiles/game-dev/skills/help/references/director-gates.md`)
+2. **`technical-director`** - gate **TD-PHASE-GATE** (`~/.mkai/profiles/game-dev/skills/help/references/director-gates.md`)
+3. **`producer`** - gate **PR-PHASE-GATE** (`~/.mkai/profiles/game-dev/skills/help/references/director-gates.md`)
+4. **`art-director`** - gate **AD-PHASE-GATE** (`~/.mkai/profiles/game-dev/skills/help/references/director-gates.md`)
 
 Pass to each: target phase name, list of artifacts present, and the context fields listed in that gate's definition.
 

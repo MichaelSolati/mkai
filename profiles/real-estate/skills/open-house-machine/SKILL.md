@@ -709,8 +709,8 @@ IF Perplexity MCP is connected →
 
 - [ ] All social posts reference SPECIFIC property details - never generic "beautiful home"
 - [ ] Never use "stunning," "gorgeous," "dream home," "don't miss out," "once in a lifetime"
-- [ ] Follow ~/.claude/skills/client-memory/references/output-format.md for all output formatting
-- [ ] Save to ./clients/{slug}/open-house/ per ~/.claude/skills/client-memory/SKILL.md
+- [ ] Follow ~/.mkai/profiles/real-estate/skills/client-memory/references/output-format.md for all output formatting
+- [ ] Save to ./clients/{slug}/open-house/ per ~/.mkai/profiles/real-estate/skills/client-memory/SKILL.md
 - [ ] No HARD NO words from brand voice
 - [ ] All follow-up texts under 300 characters
 - [ ] Seller report uses honest language - if turnout was low, say so
@@ -1161,7 +1161,7 @@ IF Perplexity MCP is connected →
 
 ## OUTPUT FORMAT
 
-Follow `~/.claude/skills/client-memory/references/output-format.md` for visual formatting. Every output includes:
+Follow `~/.mkai/profiles/real-estate/skills/client-memory/references/output-format.md` for visual formatting. Every output includes:
 
 **Pre-Event delivers:**
 1. **Header** - OPEN HOUSE MACHINE - PRE-EVENT

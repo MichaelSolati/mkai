@@ -11,5 +11,5 @@ This command crawls your core life spheres and refreshes the unified index note.
 ## Script
 
 ```bash
-python3 ~/.claude/skills/obsidian/scripts/obsidian.py index-update
+python3 ~/.mkai/profiles/obsidian/skills/obsidian/scripts/obsidian.py index-update
 ```

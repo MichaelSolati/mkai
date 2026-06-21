@@ -50,13 +50,13 @@ Component (component-specific)
 **Generate tokens:**
 
 ```bash
-node scripts/generate-tokens.cjs --config tokens.json -o tokens.css
+node ~/.mkai/profiles/ui-ux-design/skills/design-system/scripts/generate-tokens.cjs --config tokens.json -o tokens.css
 ```
 
 **Validate usage:**
 
 ```bash
-node scripts/validate-tokens.cjs --dir src/
+node ~/.mkai/profiles/ui-ux-design/skills/design-system/scripts/validate-tokens.cjs --dir src/
 ```
 
 ## References
@@ -123,15 +123,15 @@ These files are generated per-project when you run the token generation scripts:
 
 ```bash
 # Basic search (auto-detect domain)
-python scripts/search-slides.py "investor pitch"
+python3 ~/.mkai/profiles/ui-ux-design/skills/design-system/scripts/search-slides.py "investor pitch"
 
 # Domain-specific search
-python scripts/search-slides.py "problem agitation" -d copy
-python scripts/search-slides.py "revenue growth" -d chart
+python3 ~/.mkai/profiles/ui-ux-design/skills/design-system/scripts/search-slides.py "problem agitation" -d copy
+python3 ~/.mkai/profiles/ui-ux-design/skills/design-system/scripts/search-slides.py "revenue growth" -d chart
 
 # Contextual search (Premium System)
-python scripts/search-slides.py "problem slide" --context --position 2 --total 9
-python scripts/search-slides.py "cta" --context --position 9 --prev-emotion frustration
+python3 ~/.mkai/profiles/ui-ux-design/skills/design-system/scripts/search-slides.py "problem slide" --context --position 2 --total 9
+python3 ~/.mkai/profiles/ui-ux-design/skills/design-system/scripts/search-slides.py "cta" --context --position 9 --prev-emotion frustration
 ```
 
 ### Decision System CSVs

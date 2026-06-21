@@ -13,7 +13,7 @@ This command ensures your Obsidian vault is correctly connected and your identit
 ## Script
 
 ```bash
-python3 ~/.claude/skills/obsidian/scripts/obsidian.py setup
+python3 ~/.mkai/profiles/obsidian/skills/obsidian/scripts/obsidian.py setup
 ```
 
 ## Workflow
@@ -28,6 +28,6 @@ python3 ~/.claude/skills/obsidian/scripts/obsidian.py setup
         3. "What are your top 2 communication preferences (e.g., direct, detailed, casual)?"
     *   Run the `init` command to create the doc:
         ```bash
-        python3 ~/.claude/skills/obsidian/scripts/obsidian.py init "identity/me.md" --type note --title "My Digital Twin" --body "## Role\n[Role]\n\n## Interests\n[Interests]\n\n## Preferences\n[Preferences]"
+        python3 ~/.mkai/profiles/obsidian/skills/obsidian/scripts/obsidian.py init "identity/me.md" --type note --title "My Digital Twin" --body "## Role\n[Role]\n\n## Interests\n[Interests]\n\n## Preferences\n[Preferences]"
         ```
 3.  **Completion**: Confirm the vault is ready for use.

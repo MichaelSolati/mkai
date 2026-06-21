@@ -41,7 +41,7 @@ Resolve the review mode:
 2. Else read `production/review-mode.txt` → use that value
 3. Else → default to `lean`
 
-See `~/.claude/skills/help/references/director-gates.md` for the full check pattern.
+See `~/.mkai/profiles/game-dev/skills/help/references/director-gates.md` for the full check pattern.
 
 Read the following files to understand the full design intent:
 - `CLAUDE.md` - tech stack and engine
@@ -260,7 +260,7 @@ the project - cross-reference it with sprint estimates.
 - `solo` → skip. Note: "CD-PLAYTEST skipped - Solo mode."
 - `lean` → skip (not a PHASE-GATE). Note: "CD-PLAYTEST skipped - Lean mode."
 - `full` → spawn `creative-director` via Task using gate **CD-PLAYTEST**
-  (`~/.claude/skills/help/references/director-gates.md`).
+  (`~/.mkai/profiles/game-dev/skills/help/references/director-gates.md`).
 
 Pass: the full REPORT.md content, the validation question, game pillars and core
 fantasy from `design/gdd/game-concept.md`.

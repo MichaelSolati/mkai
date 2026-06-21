@@ -74,7 +74,7 @@ Start here. Set expectations, reduce defensiveness.
 Before starting Phase 1, silently check whether a user dossier exists:
 
 ```bash
-python3 skills/obsidian/scripts/obsidian.py read "dating/_meta/my-profile.md"
+python3 ~/.mkai/profiles/obsidian/skills/obsidian/scripts/obsidian.py read "dating/_meta/my-profile.md"
 ```
 
 **If the dossier exists:**
@@ -291,11 +291,11 @@ After delivering the copy doc, offer to save identity-level findings back to the
 - Map findings to dossier sections per `references/dossier-integration.md`.
 - Write each section to `$TMPDIR/section.md` and patch:
 ```bash
-python3 skills/obsidian/scripts/obsidian.py patch "dating/_meta/my-profile.md" \
+python3 ~/.mkai/profiles/obsidian/skills/obsidian/scripts/obsidian.py patch "dating/_meta/my-profile.md" \
   --target-type heading --target "<Section>" \
   --operation append --file "$TMPDIR/section.md"
 ```
-- If `my-profile.md` doesn't exist yet, create it from `match-tracker`'s `references/my-profile-template.md` first.
+- If `my-profile.md` doesn't exist yet, create it from `match-tracker`'s `~/.mkai/profiles/dating/skills/match-tracker/references/my-profile-template.md` first.
 - Confirm what was saved.
 
 **If no:** Skip and continue to Phase 6.

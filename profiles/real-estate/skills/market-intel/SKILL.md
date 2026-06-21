@@ -16,8 +16,8 @@ description: "Pull live market data for any ZIP or neighborhood and generate cli
 
 - **Perplexity MCP** -- pulls live market data (active listings,
   pending, sold, median price, DOM, inventory, trends)
-- Read `~/.claude/skills/client-memory/references/output-format.md` before producing any output
-- Read `~/.claude/skills/client-memory/SKILL.md` for save locations
+- Read `~/.mkai/profiles/real-estate/skills/client-memory/references/output-format.md` before producing any output
+- Read `~/.mkai/profiles/real-estate/skills/client-memory/SKILL.md` for save locations
 
 ---
 
@@ -930,8 +930,8 @@ Here is the full output for ZIP code 75214 (Lakewood, Dallas TX):
 - LinkedIn: professional but not corporate
 - Nextdoor: 100-175 words, neighbor tone, no links, no hashtags, no "DM me" CTAs
 - Always include the agent's name if provided
-- All output follows `~/.claude/skills/client-memory/references/output-format.md`
-- All saves follow `~/.claude/skills/client-memory/SKILL.md`
+- All output follows `~/.mkai/profiles/real-estate/skills/client-memory/references/output-format.md`
+- All saves follow `~/.mkai/profiles/real-estate/skills/client-memory/SKILL.md`
 
 ---
 
