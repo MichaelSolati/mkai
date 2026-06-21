@@ -13,7 +13,7 @@ Single entry point for everything related to a specific match. You talk naturall
 It does **not** reimplement message crafting or voice analysis. It delegates:
 - **Conversation vault management** → `obsidian` skill (read/write/append/patch)
 - **Message crafting** → `message-crafter` skill (via Skill tool)
-- **Voice grounding** → reads `my-voice` profile + dating-specific samples from vault
+- **Voice grounding** → `my-voice` skill (via `writing` profile) provides prose voice context; dating-specific texting samples are loaded from vault
 
 ---
 
@@ -104,7 +104,7 @@ Assemble full context and delegate to message-crafter.
    If `my-profile.md` is absent → note "no user dossier yet - say 'update my profile' to start one" and proceed without it.
 2. Load voice context (see `references/voice-handoff.md`):
    - Try to read `dating/_meta/voice-samples.md`; if absent, run **Voice refresh** first
-   - Try to read `~/.mkai/profiles/writing/skills/my-voice/references/voice-profile.md`; absent = proceed without, note "run /voice-setup to enrich"
+   - The `my-voice` skill is already in context via the `writing` profile — no manual file loading needed
 3. Assess conversation stage from the thread (opener / early-game / mid-game / date-seed / recovery / logistics).
 4. Invoke `message-crafter` via Skill tool with `args` containing the full assembled context block (see `references/voice-handoff.md` for exact format).
 5. Present message-crafter's options verbatim, including its rationale.
@@ -206,4 +206,4 @@ This keeps the dossier growing organically without requiring the user to remembe
 - `message-crafter` - invoked by this skill's **craft reply** flow. Can also be invoked directly for lighter-weight message help when vault context isn't needed.
 - `hinge-profile-optimizer` - for optimizing YOUR Hinge profile (not a match's dossier). Reads and writes the same `dating/_meta/my-profile.md` dossier.
 - `obsidian` - vault primitives this skill builds on.
-- `my-voice` - voice profile baseline; run `/voice-setup` once to generate it. Its `voice-profile.md`, `sample-excerpts.md`, and anti-slop references are all loaded into craft-reply context.
+- `my-voice` - loaded via the `writing` profile. Provides prose voice baseline as ambient skill context; run `/voice-setup` once to generate the profile.

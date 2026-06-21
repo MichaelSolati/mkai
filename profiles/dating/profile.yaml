@@ -11,4 +11,5 @@ skills:
 
 requires:
   - obsidian
+  - writing
 conflicts: []

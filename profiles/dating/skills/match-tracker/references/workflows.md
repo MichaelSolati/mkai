@@ -192,26 +192,17 @@ If absent, note to user: "No dossier yet. Say 'update my profile' to start one."
 ## Reading voice context
 
 ```bash
-# dating-specific texting samples (created by voice refresh - required)
+# dating-specific texting samples (required — created by voice refresh)
 python3 ~/.mkai/profiles/obsidian/skills/obsidian/scripts/obsidian.py read "dating/_meta/voice-samples.md"
 
-# User dossier (created by Update my profile - optional but load if present)
+# User dossier (optional — created by Update my profile)
 python3 ~/.mkai/profiles/obsidian/skills/obsidian/scripts/obsidian.py read "dating/_meta/my-profile.md"
-```
-# Global prose voice profile (created by /voice-setup - read via Read tool, not obsidian)
-# Path: ~/.mkai/profiles/writing/skills/my-voice/references/voice-profile.md
-
-# Prose sample excerpts (created by /voice-setup - read via Read tool)
-# Path: ~/.mkai/profiles/writing/skills/my-voice/references/sample-excerpts.md
-
-# Anti-slop baselines (created by /voice-setup - read via Read tool)
-# Paths: ~/.mkai/profiles/writing/skills/my-voice/references/anti-slop-phrases.md
-#        ~/.mkai/profiles/writing/skills/my-voice/references/anti-slop-structures.md
 ```
 
 If `voice-samples.md` is absent → run voice refresh flow before crafting (required).
 If `my-profile.md` is absent → proceed without, note "say 'update my profile' to start one."
-If any my-voice files are absent → proceed without, note "run /voice-setup once to enrich future message crafting."
+
+The `my-voice` skill is already in context via the `writing` profile — no manual file loading needed.
 
 ---
 
@@ -237,20 +228,9 @@ Voice calibration: pre-loaded - skip Phase 1 and proceed directly to situation a
 
 [VOICE: texting samples]
 <contents of dating/_meta/voice-samples.md>
-
-[VOICE: prose baseline]
-<contents of ~/.mkai/profiles/writing/skills/my-voice/references/voice-profile.md, or "not available - run /voice-setup">
-
-[VOICE: prose excerpts]
-<contents of ~/.mkai/profiles/writing/skills/my-voice/references/sample-excerpts.md, or "not available">
-
-[VOICE: anti-slop baseline]
-<contents of ~/.mkai/profiles/writing/skills/my-voice/references/anti-slop-phrases.md>
----
-<contents of ~/.mkai/profiles/writing/skills/my-voice/references/anti-slop-structures.md>
 ```
 
-message-crafter will interpret the context block, skip voice calibration (samples already provided), assess the situation, and return 2–3 options with reasoning. Present those options verbatim - do not summarize or filter.
+message-crafter will interpret the context block, skip voice calibration (samples already provided), assess the situation, and return 2–3 options with reasoning. The `my-voice` skill context is already loaded — no additional voice blocks needed. Present options verbatim - do not summarize or filter.
 
 ---
 

@@ -1,0 +1,20 @@
+name: writing
+description: Write in your authentic voice across blog posts, emails, and docs. Loads voice profile from Obsidian; enforces anti-slop rules.
+tags: [writing, voice, prose, content]
+
+agents:
+  - style-reviewer.md
+
+commands:
+  - write.md
+  - blog.md
+  - email.md
+  - design-doc.md
+  - voice-setup.md
+  - voice-refresh.md
+
+skills:
+  - my-voice
+
+requires: [obsidian]
+conflicts: []

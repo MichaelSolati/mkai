@@ -1,116 +1,82 @@
 # Voice Handoff Reference
 
-How match-tracker layers voice sources and user context, then passes them to message-crafter.
+How match-tracker assembles voice context and passes it to message-crafter.
 
 ---
 
-## The Sources
+## Voice Sources
 
-### 1. Global prose voice profile
-**Path:** `~/.mkai/profiles/writing/skills/my-voice/references/voice-profile.md`
-**Created by:** `/voice-setup` skill
-**What it contains:** Rhythm, vocabulary fingerprint, anti-AI-slop patterns, structural preferences - derived from longer writing samples.
-**Role in messaging:** Baseline identity signal. Tells message-crafter *who this person is* tonally - their sense of humor, how they think, what's authentic to them. Prevents generic dating-coach output.
-**Status:** May not exist (gitignored, generated locally). Proceed without it; note to user.
+### 1. Dating-specific texting samples (required)
 
-### 2. Prose sample excerpts
-**Path:** `~/.mkai/profiles/writing/skills/my-voice/references/sample-excerpts.md`
-**Created by:** `/voice-setup` skill
-**What it contains:** Real excerpts from the user's own writing - few-shot examples that anchor the prose voice at the sentence level.
-**Role in messaging:** Lets message-crafter calibrate format and vocabulary against actual examples, not just an abstract profile. Stronger signal than the profile alone.
-**Status:** May not exist. Proceed without it; note to user to run `/voice-setup`.
-
-### 3. Anti-slop baselines
-**Paths:** `~/.mkai/profiles/writing/skills/my-voice/references/anti-slop-phrases.md` + `~/.mkai/profiles/writing/skills/my-voice/references/anti-slop-structures.md`
-**Created by:** `/voice-setup` skill (static baselines, may be present even without a full voice profile)
-**What they contain:** Universal banned phrases and structural anti-patterns that make writing read as AI-generated.
-**Role in messaging:** Hard guardrails for message-crafter - applied on top of everything else.
-**Status:** May not exist. Proceed without; message-crafter's own defaults cover the baseline.
-
-### 4. Dating-specific texting samples
-**Path (vault-relative):** `Dating/_meta/voice-samples.md`
+**Vault path:** `dating/_meta/voice-samples.md`
 **Created by:** match-tracker's **voice refresh** flow
-**What it contains:** 5–10 raw text messages sent by the user (to anyone), preserving their exact style: sentence length, emoji habits, capitalization, punctuation, humor register.
-**Role in messaging:** Texting-specific calibration. message-crafter's voice calibration phase maps these 8 dimensions: sentence length/structure, emoji habits, capitalization, punctuation, humor style, vocabulary, formality, distinctive patterns.
-**Status:** If absent → run voice refresh before crafting. This source is required.
+**What it contains:** 5–10 raw text messages the user has sent to anyone, preserving their exact texting style across 8 dimensions: sentence length/structure, emoji habits, capitalization, punctuation, humor style, vocabulary, formality, distinctive patterns.
+**Role:** Primary voice signal for message-crafter. Texting voice ≠ prose writing voice.
+**Status:** Required. If absent, run **Voice refresh** before crafting.
 
-### 5. User dossier
-**Path (vault-relative):** `Dating/_meta/my-profile.md`
-**Created by:** match-tracker's **Update my profile** flow; also enriched by `hinge-profile-optimizer`
-**What it contains:** Identity, interests, lifestyle, what I'm looking for, dealbreakers, date repertoire, conversation style notes, and voice anchors.
-**Role in messaging:** Tells message-crafter *what the user brings* - not just how they write, but who they are. Enables personalization that reflects the user (shared interests, genuine hooks, first-date ideas that fit their life) rather than generic value-exchange patterns.
-**Status:** May not exist. Proceed without; note "say 'update my profile' to start one."
+### 2. My-voice skill (optional enrichment)
+
+**Loaded via:** `writing` profile (declared in `requires`)
+**What it provides:** Prose voice profile, vocabulary fingerprints, humor style, anti-slop rules — derived from longer-form writing samples.
+**Role:** Ambient context already in the agent's skill context. Enriches message-crafter's understanding of the user's personality, humor register, and what sounds authentically like them. Supplements but does not replace the texting samples.
+**Status:** Present if the `writing` profile is active. Proceed without it if not; texting samples alone are sufficient.
+
+### 3. User dossier (optional)
+
+**Vault path:** `dating/_meta/my-profile.md`
+**Created by:** match-tracker's **Update my profile** flow; enriched by `hinge-profile-optimizer`
+**What it contains:** Identity, interests, lifestyle, what I'm looking for, dealbreakers, date repertoire, conversation style notes.
+**Role:** Tells message-crafter *what the user brings* — not just how they write, but who they are. Enables genuine personalization.
+**Status:** Optional. Proceed without; note "say 'update my profile' to start one."
 
 ---
 
 ## Layering Logic
 
-The sources are complementary - pass all available, labeled separately. Do NOT collapse into a summary.
-
 | Source | Informs |
 |--------|---------|
-| Texting samples | *Format* - how he types (length, punctuation, emoji) |
-| Prose voice profile | *Substance* - humor style, vocabulary range, tone |
-| Prose excerpts | *Examples* - few-shot anchor for the above |
-| Anti-slop baselines | *Guardrails* - what never sounds like him |
-| User dossier | *Content* - what he brings, what he wants, where he'd take her |
+| Texting samples | *Format* — sentence length, punctuation, emoji, register |
+| My-voice skill | *Substance* — humor style, vocabulary range, personality |
+| User dossier | *Content* — interests, what he wants, where he'd take her |
+
+The `my-voice` skill context is already loaded in the agent — do not manually read its files and inject them into the handoff. It informs message-crafter passively as standing context.
 
 ---
 
 ## Handoff Format for message-crafter Args
 
-Structure the `args` string passed to the Skill tool exactly like this:
-
 ```
 [CONTEXT]
 Platform: {Hinge | Bumble | Tinder}
 Conversation stage: {opener | early-game | mid-game | date-seed | recovery | logistics}
-User wants: {describe specifically - opener, reply to her message, date ask, recovery, etc.}
+User wants: {describe specifically}
 Voice calibration: pre-loaded - skip Phase 1 and proceed directly to situation assessment.
 
 [ABOUT ME]
-{full contents of Dating/_meta/my-profile.md}
+{full contents of dating/_meta/my-profile.md}
 - OR -
 [ABOUT ME]
 Not available. User can build one via match-tracker's "update my profile" flow.
 
 [HER PROFILE]
-{full contents of Dating/<Name>/profile.md}
+{full contents of dating/<name-slug>/profile.md}
 
 [CONVERSATION LOG]
-{full contents of Dating/<Name>/conversation.md}
+{full contents of dating/<name-slug>/conversation.md}
 
 [VOICE: texting samples]
-{full contents of Dating/_meta/voice-samples.md}
-
-[VOICE: prose baseline]
-{full contents of ~/.mkai/profiles/writing/skills/my-voice/references/voice-profile.md}
-- OR -
-[VOICE: prose baseline]
-Not available. Run /voice-setup to generate a global voice profile.
-
-[VOICE: prose excerpts]
-{full contents of ~/.mkai/profiles/writing/skills/my-voice/references/sample-excerpts.md}
-- OR -
-[VOICE: prose excerpts]
-Not available.
-
-[VOICE: anti-slop baseline]
-{full contents of ~/.mkai/profiles/writing/skills/my-voice/references/anti-slop-phrases.md}
----
-{full contents of ~/.mkai/profiles/writing/skills/my-voice/references/anti-slop-structures.md}
-- OR -
-[VOICE: anti-slop baseline]
-Not available.
+{full contents of dating/_meta/voice-samples.md}
 ```
 
-**Order matters:** `[ABOUT ME]` comes before `[HER PROFILE]` so message-crafter reads who the user is before who she is. This primes personalization from the user's actual identity rather than reverse-engineering it from the match.
+**Order matters:** `[ABOUT ME]` before `[HER PROFILE]` primes personalization from who the user is, not who she is.
+
+The `my-voice` skill is already in context — no `[VOICE: prose baseline]` block needed in the args.
 
 ---
 
 ## Voice Calibration Phase Handoff Note
 
-Include `Voice calibration: pre-loaded - skip Phase 1 and proceed directly to situation assessment.` in the `[CONTEXT]` block (as shown above). This tells message-crafter the samples are already in the args and it should treat Phase 1 as complete.
+Include `Voice calibration: pre-loaded - skip Phase 1 and proceed directly to situation assessment.` in the `[CONTEXT]` block. This tells message-crafter the texting samples are already provided and Phase 1 is complete.
 
 ---
 
@@ -118,9 +84,9 @@ Include `Voice calibration: pre-loaded - skip Phase 1 and proceed directly to si
 
 Voice samples should be refreshed when:
 - The user's texting style changes (new phone, new habits)
-- Current messages feel "off" or "like a dating coach"
+- Messages feel "off" or "like a dating coach"
 - It's been more than a few months since last refresh
 
-Run the **voice refresh** flow from match-tracker, or say "update my texting samples."
+Run the **voice refresh** flow, or say "update my texting samples."
 
-The prose baseline is updated separately via `/voice-setup` (a more involved process). Don't conflate the two.
+The prose baseline lives in the `my-voice` skill and is updated separately via `/voice-setup`.
