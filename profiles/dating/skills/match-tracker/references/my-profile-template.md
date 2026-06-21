@@ -41,6 +41,18 @@
 
 [Recurring references, phrases, humor patterns I lean on. Not just *how* I write (that's in voice-samples.md) but *what* I tend to pull from - cultural touchstones, running jokes, areas of fluency. Supplements voice samples with content-level signals.]
 
+## Likes
+
+[Specific things I genuinely enjoy - finer-grained than Interests & Hobbies. Message-quotable. e.g. "specialty coffee, late-night diners, albums I need to sit with twice". Not activities - vibes and things.]
+
+## Dislikes
+
+[Soft turn-offs and irritations - distinct from Dealbreakers & Friction (which are hard nos). e.g. "brunch as a personality, tepid replies, places with TVs everywhere". These inform what to avoid suggesting.]
+
+## Preferences
+
+[Soft patterns about how I like to do things. e.g. "evening dates over daytime", "walks over sitting still for 2 hours", "small group dinners over packed bars". Informs date-suggestion logic.]
+
 ## Notes
 
 [Running freeform - anything that doesn't fit neatly above. Observations about how conversations tend to go, things I want to remember, ongoing experiments.]

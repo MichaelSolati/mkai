@@ -1,292 +1,382 @@
 # Workflows Reference
 
-Detailed step-by-step for each match-tracker operation. SKILL.md describes the logic; this file handles the shell-command specifics.
+Detailed step-by-step call sequences for each match-tracker operation. All operations go through the helper script — never call obsidian.py directly.
 
 ---
 
-## Obsidian command base
+## Helper base
 
-All obsidian calls use:
-```
-python3 ~/.mkai/profiles/obsidian/skills/obsidian/scripts/obsidian.py <subcommand> [args]
+```bash
+python3 ~/.mkai/profiles/dating/skills/match-tracker/scripts/match_tracker.py <command> [args]
 ```
 
-Multi-line content always goes to `$TMPDIR/<name>.md` first, then passed via `--file`. Never inline multi-line markdown as a positional arg - backslashes, backticks, and `$` will break.
+All commands return JSON: `{"ok": true|false, "command": "...", "data": {...}, "warnings": [...], "errors": [...]}`
+
+**Multi-line content:** always write to `$TMPDIR/<name>.md` first, then pass via `--file`. Never inline multi-line markdown.
+
+**Dry run:** add `--dry-run` to any command to see what obsidian.py calls would be made without touching the vault.
 
 ---
 
 ## 1. New match
 
-**Goal:** Create `dating/<name-slug>/profile.md` and `dating/<name-slug>/conversation.md` with correct structure.
-
 ```bash
-# Build profile.md from template + user's input, write to vault
-python3 ~/.mkai/profiles/obsidian/skills/obsidian/scripts/obsidian.py write "dating/<name-slug>/profile.md" --file "$TMPDIR/profile.md"
+# Build profile content from template + user input
+cat > $TMPDIR/profile.md << 'EOF'
+# Sarah
 
-# Build conversation.md skeleton with Pre-Match Strategy filled in
-python3 ~/.mkai/profiles/obsidian/skills/obsidian/scripts/obsidian.py write "dating/<name-slug>/conversation.md" --file "$TMPDIR/conversation.md"
+## Quick Facts
+- **Age:** 28
+...
+EOF
+
+python3 ~/.mkai/profiles/dating/skills/match-tracker/scripts/match_tracker.py new-match \
+  --name "Sarah" \
+  --platform "Hinge" \
+  --matched "2026-06-20" \
+  --what-caught-eye "her answer about the road trip" \
+  --profile-file "$TMPDIR/profile.md"
 ```
 
-- `write` creates intermediate folders automatically (no mkdir needed).
-- Use the exact section structure from `profile-template.md` and `conversation-template.md`.
-- Fill `profile.md` with everything the user provided - don't leave placeholder headings empty if data was given.
-- Fill Pre-Match Strategy in `conversation.md` with "what caught your eye" before writing.
+Returns: `{slug, name, profile_path, conversation_path, collisions_resolved}`
 
-**Verification:**
-```bash
-python3 ~/.mkai/profiles/obsidian/skills/obsidian/scripts/obsidian.py read "dating/<name-slug>/profile.md" --map
-python3 ~/.mkai/profiles/obsidian/skills/obsidian/scripts/obsidian.py read "dating/<name-slug>/conversation.md" --map
-```
+On `COLLISION` error: run `disambiguate <old-slug> --to <new-slug>` first, then retry.
 
 ---
 
-## 2. Update profile
+## 2. Update match profile
 
-**Goal:** Add or replace content in a specific section of `profile.md`.
-
-### Append within a section (most common - Notes & Observations)
 ```bash
-python3 ~/.mkai/profiles/obsidian/skills/obsidian/scripts/obsidian.py patch "dating/<name-slug>/profile.md" \
-  --target-type heading --target "Notes & Observations" \
-  --operation append --file "$TMPDIR/note.md"
+# Append to a section (most common)
+cat > $TMPDIR/note.md << 'EOF'
+- Works in publishing; moves start next month to Williamsburg.
+EOF
+
+python3 ~/.mkai/profiles/dating/skills/match-tracker/scripts/match_tracker.py update-match sarah \
+  --section "Notes & Observations" \
+  --file "$TMPDIR/note.md" \
+  --operation append
+
+# Replace a section (facts that changed)
+python3 ~/.mkai/profiles/dating/skills/match-tracker/scripts/match_tracker.py update-match sarah \
+  --section "Quick Facts" \
+  --file "$TMPDIR/facts.md" \
+  --operation replace
 ```
 
-### Replace a section (facts that have changed - Quick Facts, Compatibility Signals, etc.)
-```bash
-python3 ~/.mkai/profiles/obsidian/skills/obsidian/scripts/obsidian.py patch "dating/<name-slug>/profile.md" \
-  --target-type heading --target "Compatibility Signals" \
-  --operation replace --file "$TMPDIR/signals.md"
-```
-
-> **Warning:** `patch --operation replace` replaces the full section content under that heading down to the next heading of equal/higher level. Write the full intended section content to `$TMPDIR/`, not just the new fragment.
+> **`--operation replace`** replaces the full section. Write the complete intended content to `$TMPDIR/`, not just the new fragment.
 
 ---
 
 ## 3. Log exchange (her message)
 
-**Goal:** Append a new `## Exchange N` block to `conversation.md`.
-
-First, find the current last exchange number:
 ```bash
-python3 ~/.mkai/profiles/obsidian/skills/obsidian/scripts/obsidian.py read "dating/<name-slug>/conversation.md" --map
-```
-The `--map` output lists headings. Find the highest `## Exchange N`, increment by 1.
+# Write her message to a temp file
+cat > $TMPDIR/exchange.md << 'EOF'
+haha okay but what does that even mean for you day-to-day
+EOF
 
-Build the exchange block in `$TMPDIR/exchange.md`:
-```markdown
-## Exchange N
-
-**Her response:**
-> [her message verbatim]
-
-**Read:** YYYY-MM-DD
+python3 ~/.mkai/profiles/dating/skills/match-tracker/scripts/match_tracker.py log-exchange sarah \
+  --her-file "$TMPDIR/exchange.md" \
+  --read "2026-06-21"
 ```
 
-Append to the log:
-```bash
-python3 ~/.mkai/profiles/obsidian/skills/obsidian/scripts/obsidian.py append "dating/<name-slug>/conversation.md" --file "$TMPDIR/exchange.md"
-```
+Returns: `{slug, exchange_n, conversation_path}`
 
 ---
 
 ## 4. Log my sent reply
 
-**Goal:** Append the `## My Reply` line under the current exchange. Only run after user confirms "I sent it."
+Only after user confirms "I sent it."
 
-Build reply block in `$TMPDIR/reply.md`:
-```markdown
-## My Reply (YYYY-MM-DD)
-
-[exact text that was sent]
-```
-
-Append:
 ```bash
-python3 ~/.mkai/profiles/obsidian/skills/obsidian/scripts/obsidian.py append "dating/<name-slug>/conversation.md" --file "$TMPDIR/reply.md"
-```
+cat > $TMPDIR/reply.md << 'EOF'
+means I get to make up the rules lol
+EOF
 
-> `append` adds to the end of the file. Since exchanges are written sequentially, this is correct - the reply always follows the most recently appended exchange block.
+python3 ~/.mkai/profiles/dating/skills/match-tracker/scripts/match_tracker.py log-reply sarah \
+  --my-file "$TMPDIR/reply.md" \
+  --sent "2026-06-21"
+```
 
 ---
 
 ## 5. List active matches
 
 ```bash
-python3 ~/.mkai/profiles/obsidian/skills/obsidian/scripts/obsidian.py list dating/
+python3 ~/.mkai/profiles/dating/skills/match-tracker/scripts/match_tracker.py list-matches --status active
 ```
 
-This returns folder names (one per line). For each folder, read the metadata block (the top-level heading section containing platform/matched details):
-```bash
-python3 ~/.mkai/profiles/obsidian/skills/obsidian/scripts/obsidian.py read "dating/<name-slug>/conversation.md" --heading "<Name> - Conversation Log"
-```
-
-Or read the full file and parse the `**Platform:**`, `**Matched:**`, `**Status:**` lines from the top of the conversation log.
-
-Render as a table:
-
-| Name | App | Matched | Status | Last Exchange |
-|------|-----|---------|--------|---------------|
-| ... | ... | ... | ... | ## Exchange N date |
+Returns: `{matches: [{slug, platform, matched_date, status, last_exchange_n, last_exchange_date, next_event}]}`
 
 ---
 
 ## 6. Voice refresh
 
-Build `$TMPDIR/voice-samples.md` from user's pasted texts, preserving their style exactly. Then write to vault:
-
 ```bash
-python3 ~/.mkai/profiles/obsidian/skills/obsidian/scripts/obsidian.py write "dating/_meta/voice-samples.md" --file "$TMPDIR/voice-samples.md"
-```
+# User pastes 5-10 recent texts → write to temp file
+cat > $TMPDIR/voice-samples.md << 'EOF'
+[pasted texts here]
+EOF
 
-The `_meta/` folder is created automatically on first write. If it already exists, `write` overwrites the file.
+python3 ~/.mkai/profiles/dating/skills/match-tracker/scripts/match_tracker.py voice-refresh \
+  --samples-file "$TMPDIR/voice-samples.md"
+```
 
 ---
 
 ## 7. Update my profile
 
-**Goal:** Add or replace content in a specific section of `dating/_meta/my-profile.md`.
+Section routing guide:
 
-If the file doesn't exist yet, create it from `references/my-profile-template.md`:
+| Signal type | Target section |
+|---|---|
+| Concrete fact (job, location, age) | `Quick Facts` |
+| Who-I-am statements, humor, energy | `Identity & Personality` |
+| Activities, obsessions, current interests | `Interests & Hobbies` |
+| Typical week, life stage, social rhythm | `Lifestyle & Context` |
+| Relationship goals, pace | `What I'm Looking For` |
+| Hard nos, patterns to avoid | `Dealbreakers & Friction` |
+| Go-to spots, date ideas | `Date Repertoire` |
+| Texting style notes | `Conversation Style Notes` |
+| Recurring phrases, humor patterns | `Voice Anchors` |
+| Specific things I enjoy (finer-grained) | `Likes` |
+| Specific soft turn-offs (not dealbreakers) | `Dislikes` |
+| Soft patterns about how I prefer things | `Preferences` |
+| Stories worth retelling | Use `capture anecdote` → `anecdotes.md` |
+| Everything else | `Notes` |
+
 ```bash
-python3 ~/.mkai/profiles/obsidian/skills/obsidian/scripts/obsidian.py write "dating/_meta/my-profile.md" --file "$TMPDIR/my-profile.md"
-```
+cat > $TMPDIR/note.md << 'EOF'
+- specialty coffee, late-night diners
+EOF
 
-### Append within a section (most new info lands here)
-```bash
-python3 ~/.mkai/profiles/obsidian/skills/obsidian/scripts/obsidian.py patch "dating/_meta/my-profile.md" \
-  --target-type heading --target "Notes & Observations" \
-  --operation append --file "$TMPDIR/note.md"
+python3 ~/.mkai/profiles/dating/skills/match-tracker/scripts/match_tracker.py update-my-profile \
+  --section "Likes" \
+  --file "$TMPDIR/note.md" \
+  --operation append
 ```
-
-### Replace a section (facts that have changed)
-```bash
-python3 ~/.mkai/profiles/obsidian/skills/obsidian/scripts/obsidian.py patch "dating/_meta/my-profile.md" \
-  --target-type heading --target "Quick Facts" \
-  --operation replace --file "$TMPDIR/facts.md"
-```
-
-> **Section routing guide:**
-> - Concrete facts (age, job, location) → `Quick Facts`
-> - Who-I-am statements, humor, energy → `Identity & Personality`
-> - Activities, obsessions → `Interests & Hobbies`
-> - Typical week, life stage → `Lifestyle & Context`
-> - Relationship goals → `What I'm Looking For`
-> - Hard nos, patterns to avoid → `Dealbreakers & Friction`
-> - Go-to spots, date ideas → `Date Repertoire`
-> - Texting style notes → `Conversation Style Notes`
-> - References, phrases, humor patterns → `Voice Anchors`
-> - Everything else → `Notes`
 
 ---
 
 ## 8. View my profile
 
 ```bash
-python3 ~/.mkai/profiles/obsidian/skills/obsidian/scripts/obsidian.py read "dating/_meta/my-profile.md"
-```
+python3 ~/.mkai/profiles/dating/skills/match-tracker/scripts/match_tracker.py view-my-profile
 
-If absent, note to user: "No dossier yet. Say 'update my profile' to start one."
+# Or a single section:
+python3 ~/.mkai/profiles/dating/skills/match-tracker/scripts/match_tracker.py view-my-profile \
+  --section "Likes"
+```
 
 ---
 
-## Reading voice context
+## 9. Craft reply — full sequence
 
 ```bash
-# dating-specific texting samples (required — created by voice refresh)
-python3 ~/.mkai/profiles/obsidian/skills/obsidian/scripts/obsidian.py read "dating/_meta/voice-samples.md"
+# Step 1: check upcoming calendar before suggesting date times
+python3 ~/.mkai/profiles/dating/skills/match-tracker/scripts/match_tracker.py list-events --upcoming
 
-# User dossier (optional — created by Update my profile)
-python3 ~/.mkai/profiles/obsidian/skills/obsidian/scripts/obsidian.py read "dating/_meta/my-profile.md"
+# Step 2: assemble full context for message-crafter
+python3 ~/.mkai/profiles/dating/skills/match-tracker/scripts/match_tracker.py assemble-context sarah \
+  --stage "early-game" \
+  --purpose "reply to her message about travel"
 ```
 
-If `voice-samples.md` is absent → run voice refresh flow before crafting (required).
-If `my-profile.md` is absent → proceed without, note "say 'update my profile' to start one."
+Returns: `{context_block, slug, stage, includes_my_profile, includes_voice_samples, anecdote_count}`
 
-The `my-voice` skill is already in context via the `writing` profile — no manual file loading needed.
+Pass `data.context_block` verbatim as `args` to the `message-crafter` Skill.
+
+After sending:
+```bash
+# Log the reply
+python3 ~/.mkai/profiles/dating/skills/match-tracker/scripts/match_tracker.py log-reply sarah \
+  --my-file "$TMPDIR/reply.md" --sent "2026-06-21"
+
+# If an anecdote was deployed:
+python3 ~/.mkai/profiles/dating/skills/match-tracker/scripts/match_tracker.py mark-anecdote-used a-2026-001 \
+  --with sarah --date "2026-06-21"
+```
 
 ---
 
-## Invoking message-crafter
+## 10. Capture likes / dislikes / preferences / anecdotes
 
-Use the Skill tool with `skill: "message-crafter"` and pass the full assembled context as `args`. Structure the args as:
+```bash
+# Like
+python3 ~/.mkai/profiles/dating/skills/match-tracker/scripts/match_tracker.py capture like \
+  --content "specialty coffee, bouldering, late-night diners"
 
+# Dislike
+python3 ~/.mkai/profiles/dating/skills/match-tracker/scripts/match_tracker.py capture dislike \
+  --content "brunch as a personality, places with TVs everywhere"
+
+# Preference
+python3 ~/.mkai/profiles/dating/skills/match-tracker/scripts/match_tracker.py capture preference \
+  --content "evening dates over daytime"
+
+# Anecdote (write summary to file first)
+cat > $TMPDIR/story.md << 'EOF'
+At a small show in Logan Square, a stranger handed me a beer and said "great set man."
+I hadn't played. Spent the next 45 minutes deflecting compliments for a band I had nothing to do with.
+EOF
+
+python3 ~/.mkai/profiles/dating/skills/match-tracker/scripts/match_tracker.py capture anecdote \
+  --title "Mistaken for the band in Chicago" \
+  --tags "music,embarrassing,travel" \
+  --length medium \
+  --hook "music conversations, self-deprecating openers" \
+  --file "$TMPDIR/story.md"
 ```
-[CONTEXT]
-Platform: Hinge
-Conversation stage: early-game
-User wants: reply to her latest message
-Voice calibration: pre-loaded - skip Phase 1 and proceed directly to situation assessment.
 
-[ABOUT ME]
-<full contents of dating/_meta/my-profile.md, or "Not available - user can build one via 'update my profile'">
-
-[HER PROFILE]
-<full contents of dating/<name-slug>/profile.md>
-
-[CONVERSATION LOG]
-<full contents of dating/<name-slug>/conversation.md>
-
-[VOICE: texting samples]
-<contents of dating/_meta/voice-samples.md>
-```
-
-message-crafter will interpret the context block, skip voice calibration (samples already provided), assess the situation, and return 2–3 options with reasoning. The `my-voice` skill context is already loaded — no additional voice blocks needed. Present options verbatim - do not summarize or filter.
+Returns `anecdote_id` which can be used with `mark-anecdote-used`.
 
 ---
 
-## 9. Disambiguate on collision (rename sequence)
+## 11. List anecdotes
 
-When a name collision is detected (see SKILL.md "Name Collisions"), rename the existing folder before creating the new match. There is no native `obsidian rename` command - use read → write → delete.
-
-**Step 1 - Capture the existing match's files:**
 ```bash
-python3 ~/.mkai/profiles/obsidian/skills/obsidian/scripts/obsidian.py read "dating/<old-name-slug>/profile.md" > "$TMPDIR/profile_rename.md"
-python3 ~/.mkai/profiles/obsidian/skills/obsidian/scripts/obsidian.py read "dating/<old-name-slug>/conversation.md" > "$TMPDIR/conversation_rename.md"
+# All anecdotes
+python3 ~/.mkai/profiles/dating/skills/match-tracker/scripts/match_tracker.py list-anecdotes
+
+# Unused with a specific match
+python3 ~/.mkai/profiles/dating/skills/match-tracker/scripts/match_tracker.py list-anecdotes \
+  --unused-with sarah
+
+# Filter by tags
+python3 ~/.mkai/profiles/dating/skills/match-tracker/scripts/match_tracker.py list-anecdotes \
+  --tags "music,travel"
 ```
-
-**Step 2 - Write to the new disambiguated path:**
-```bash
-python3 ~/.mkai/profiles/obsidian/skills/obsidian/scripts/obsidian.py write "dating/<new-name-slug>/profile.md" --file "$TMPDIR/profile_rename.md"
-python3 ~/.mkai/profiles/obsidian/skills/obsidian/scripts/obsidian.py write "dating/<new-name-slug>/conversation.md" --file "$TMPDIR/conversation_rename.md"
-```
-
-**Step 3 - Verify the new files exist before deleting the originals:**
-```bash
-python3 ~/.mkai/profiles/obsidian/skills/obsidian/scripts/obsidian.py read "dating/<new-name-slug>/profile.md" --map
-python3 ~/.mkai/profiles/obsidian/skills/obsidian/scripts/obsidian.py read "dating/<new-name-slug>/conversation.md" --map
-```
-
-Only proceed to Step 4 if both reads succeed.
-
-**Step 4 - Delete the old files:**
-```bash
-python3 ~/.mkai/profiles/obsidian/skills/obsidian/scripts/obsidian.py delete "dating/<old-name-slug>/profile.md"
-python3 ~/.mkai/profiles/obsidian/skills/obsidian/scripts/obsidian.py delete "dating/<old-name-slug>/conversation.md"
-```
-
-**Step 5 - Update `Display name:` and `Disambiguator type:` in the renamed profile:**
-```bash
-python3 ~/.mkai/profiles/obsidian/skills/obsidian/scripts/obsidian.py patch "dating/<new-name-slug>/profile.md" \
-  --target-type heading --target "Quick Facts" \
-  --operation replace --file "$TMPDIR/quick_facts_rename.md"
-```
-
-Write the full updated Quick Facts block to `$TMPDIR/quick_facts_rename.md` first.
 
 ---
 
-### Lookup - list candidates matching a first name
-
-When the user references a name and multiple folders start with that first name:
+## 12. Schedule a date
 
 ```bash
-python3 ~/.mkai/profiles/obsidian/skills/obsidian/scripts/obsidian.py list dating/
+# Step 1: check for conflicts first
+python3 ~/.mkai/profiles/dating/skills/match-tracker/scripts/match_tracker.py check-conflict \
+  --date 2026-06-28 --start 19:00 --buffer-minutes 30
+
+# Step 2: schedule (re-run with --force if conflicts found and user confirmed)
+python3 ~/.mkai/profiles/dating/skills/match-tracker/scripts/match_tracker.py schedule sarah \
+  --date 2026-06-28 \
+  --start 19:00 \
+  --end 21:00 \
+  --where "Maison Premiere, Williamsburg" \
+  --activity drinks
 ```
 
-Filter the result to folders matching the normalized/slugified `<First>` (case-insensitive). For each candidate, read the conversation header (top-level heading section containing platform/matched details) to extract context:
+Returns: `{event_id, path, date, start, where, activity, match, conflicts}`
+
+On conflict without `--force`: returns `{event_id: null, conflicts: [...], message: "..."}`. Surface the conflict to the user and ask how to proceed, then re-call with `--force` if they confirm.
+
+---
+
+## 13. List upcoming events
 
 ```bash
-python3 ~/.mkai/profiles/obsidian/skills/obsidian/scripts/obsidian.py read "dating/<candidate-slug>/conversation.md" --heading "<Candidate> - Conversation Log"
+# All upcoming
+python3 ~/.mkai/profiles/dating/skills/match-tracker/scripts/match_tracker.py list-events --upcoming
+
+# This week
+python3 ~/.mkai/profiles/dating/skills/match-tracker/scripts/match_tracker.py list-events \
+  --from 2026-06-23 --to 2026-06-30
+
+# With a specific match
+python3 ~/.mkai/profiles/dating/skills/match-tracker/scripts/match_tracker.py list-events \
+  --with sarah
 ```
 
-Parse `**Platform:**`, `**Matched:**`, `**Status:**`, and the highest `## Exchange N` heading for a "last exchange" date. Surface to the user as a one-liner per candidate before asking which they mean.
+---
+
+## 14. Check conflict
+
+```bash
+python3 ~/.mkai/profiles/dating/skills/match-tracker/scripts/match_tracker.py check-conflict \
+  --date 2026-06-28 \
+  --start 19:00 \
+  --end 21:00 \
+  --buffer-minutes 30
+```
+
+Returns: `{has_conflict, conflict_count, same_day, time_overlaps, date}`
+
+---
+
+## 15. Update or cancel event
+
+```bash
+# Reschedule
+python3 ~/.mkai/profiles/dating/skills/match-tracker/scripts/match_tracker.py update-event \
+  2026-06-28-sarah-drinks \
+  --date 2026-07-02 \
+  --start 20:00 \
+  --status rescheduled
+
+# Cancel
+python3 ~/.mkai/profiles/dating/skills/match-tracker/scripts/match_tracker.py cancel-event \
+  2026-06-28-sarah-drinks \
+  --reason "she had a conflict"
+```
+
+---
+
+## 16. Complete event (log date outcome)
+
+```bash
+cat > $TMPDIR/outcome.md << 'EOF'
+Really good. Two hours felt like twenty minutes. She knows everyone in that bar.
+Asked if I wanted to walk after — good sign.
+EOF
+
+cat > $TMPDIR/reflection.md << 'EOF'
+Conversation stayed light but I could tell she was gauging me. Don't overthink it.
+EOF
+
+python3 ~/.mkai/profiles/dating/skills/match-tracker/scripts/match_tracker.py complete-event \
+  2026-06-22-sarah-k-drinks \
+  --outcome-file "$TMPDIR/outcome.md" \
+  --reflection-file "$TMPDIR/reflection.md"
+```
+
+---
+
+## 17. Disambiguate on name collision
+
+When a name collision is detected at new-match intake:
+
+```bash
+# Rename the existing match folder (also rewrites all calendar events)
+python3 ~/.mkai/profiles/dating/skills/match-tracker/scripts/match_tracker.py disambiguate sarah \
+  --to sarah-k
+```
+
+Then patch Quick Facts on both profiles to record `Display name:` and `Disambiguator type:`:
+
+```bash
+cat > $TMPDIR/facts.md << 'EOF'
+- **Display name:** Sarah K
+- **Disambiguator type:** last-initial
+...
+EOF
+
+python3 ~/.mkai/profiles/dating/skills/match-tracker/scripts/match_tracker.py update-match sarah-k \
+  --section "Quick Facts" \
+  --file "$TMPDIR/facts.md" \
+  --operation replace
+```
+
+---
+
+## Match summary (read current state)
+
+```bash
+# Profile + metadata + events
+python3 ~/.mkai/profiles/dating/skills/match-tracker/scripts/match_tracker.py match-summary sarah
+
+# Include conversation log
+python3 ~/.mkai/profiles/dating/skills/match-tracker/scripts/match_tracker.py match-summary sarah \
+  --include-conversation
+```
+
+Returns: `{slug, meta, profile, conversation, next_event, upcoming_events, past_events}`

@@ -54,3 +54,8 @@
 ## Potential Friction
 
 [Honest assessment of mismatches or unknowns worth tracking - distance, life-stage gaps, contradictory signals, dealbreakers. Better to log early than be surprised.]
+
+## Date History
+
+<!-- Auto-maintained by match-tracker. Wikilinks to event notes; status reflects current state. -->
+

@@ -2,3 +2,5 @@ node_modules/
 dist/
 .data/
 config.yaml
+__pycache__/
+*.pyc
