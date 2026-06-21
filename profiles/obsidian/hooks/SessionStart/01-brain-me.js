@@ -18,9 +18,7 @@ function main() {
     if (output) {
       process.stdout.write(
         JSON.stringify({
-          hookSpecificOutput: {
-            additionalContext: output,
-          },
+          additionalContext: output,
           suppressOutput: true,
         }) + '\n',
       );

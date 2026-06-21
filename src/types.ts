@@ -62,3 +62,29 @@ export interface StashRecord {
 export type Target =
   | {kind: 'global'; platform: Platform}
   | {kind: 'project'; projectPath: string; platform: Platform};
+
+export interface StandardHookInput {
+  platform: Platform;
+  eventName:
+    | 'SessionStart'
+    | 'PreToolUse'
+    | 'TaskCompleted'
+    | 'UserPromptSubmit'
+    | string;
+  rawEventName: string;
+  cwd: string;
+  sessionId?: string;
+  toolCall?: {
+    name: string;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    arguments?: any;
+  };
+  rawPayload: string;
+}
+
+export interface StandardHookOutput {
+  decision?: 'allow' | 'deny';
+  reason?: string;
+  additionalContext?: string;
+  suppressOutput?: boolean;
+}

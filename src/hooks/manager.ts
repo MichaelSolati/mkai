@@ -4,7 +4,13 @@ import path from 'path';
 
 import {profilesDir} from '../config';
 import {readState} from '../state';
-import type {Activation, Platform, Profile} from '../types';
+import type {
+  Activation,
+  Platform,
+  Profile,
+  StandardHookInput,
+  StandardHookOutput,
+} from '../types';
 
 const HOOK_COMMAND = 'mkai dispatch';
 
@@ -130,6 +136,129 @@ export async function removeDispatcher(
 }
 
 /**
+ * Normalizes an incoming agent hook payload into standard HookInput context.
+ */
+export function toStandardInput(
+  eventName: string,
+  payloadStr: string,
+  platform: Platform,
+): StandardHookInput {
+  let cwd = process.cwd();
+  let sessionId: string | undefined;
+  let rawEventName = eventName;
+  let toolCall: StandardHookInput['toolCall'] | undefined;
+
+  try {
+    const data = JSON.parse(payloadStr);
+
+    if (data.cwd) cwd = data.cwd;
+
+    if (data.session_id) sessionId = data.session_id;
+    else if (data.sessionId) sessionId = data.sessionId;
+
+    if (data.hook_event_name) rawEventName = data.hook_event_name;
+    else if (data.hookEventName) rawEventName = data.hookEventName;
+    else if (data.event) rawEventName = data.event;
+
+    const toolName =
+      data.tool_name || data.tool || data.call?.tool || data.name;
+    const toolArgs =
+      data.tool_input || data.arguments || data.call?.arguments || data.args;
+    if (toolName) {
+      toolCall = {
+        name: toolName,
+        arguments: toolArgs || {},
+      };
+    }
+  } catch {
+    // Ignore JSON parsing issues (e.g. empty stdin)
+  }
+
+  let stdEvent = eventName;
+  if (rawEventName.startsWith('SessionStart')) {
+    stdEvent = 'SessionStart';
+  } else if (rawEventName === 'BeforeTool' || rawEventName === 'PreToolUse') {
+    stdEvent = 'PreToolUse';
+  } else if (rawEventName === 'AfterTool' || rawEventName === 'TaskCompleted') {
+    stdEvent = 'TaskCompleted';
+  }
+
+  return {
+    platform,
+    eventName: stdEvent,
+    rawEventName,
+    cwd,
+    sessionId,
+    toolCall,
+    rawPayload: payloadStr,
+  };
+}
+
+/**
+ * Transforms standard hook output into agent-specific formats.
+ */
+
+export function toAgentOutput(
+  merged: StandardHookOutput,
+  platform: Platform,
+  rawEventName: string,
+): Record<string, unknown> {
+  if (platform === 'claude') {
+    const response: Record<string, unknown> = {
+      hookSpecificOutput: {
+        hookEventName: rawEventName,
+      },
+    };
+
+    if (merged.decision) {
+      response.permissionDecision = merged.decision;
+      (
+        response.hookSpecificOutput as Record<string, unknown>
+      ).permissionDecision = merged.decision;
+    }
+    if (merged.reason) {
+      response.reason = merged.reason;
+      (
+        response.hookSpecificOutput as Record<string, unknown>
+      ).permissionDecisionReason = merged.reason;
+      (response.hookSpecificOutput as Record<string, unknown>).reason =
+        merged.reason;
+    }
+    if (merged.additionalContext) {
+      (
+        response.hookSpecificOutput as Record<string, unknown>
+      ).additionalContext = merged.additionalContext;
+      response.additionalContext = merged.additionalContext;
+    }
+    if (merged.suppressOutput === true) {
+      response.suppressOutput = true;
+    }
+
+    return response;
+  } else {
+    // Gemini CLI
+    const response: Record<string, unknown> = {};
+
+    if (merged.decision) {
+      response.decision = merged.decision;
+    }
+    if (merged.reason) {
+      response.reason = merged.reason;
+    }
+    if (merged.suppressOutput === true) {
+      response.suppressOutput = true;
+    }
+    if (merged.additionalContext) {
+      response.hookSpecificOutput = {
+        additionalContext: merged.additionalContext,
+      };
+    }
+
+    return response;
+  }
+}
+
+/**
  * Executes MKAI-managed hooks for an event.
  */
 export async function runDispatch(
@@ -162,6 +291,10 @@ export async function runDispatch(
     return {exitCode: 0, stdout: '', stderr: ''};
   }
 
+  // Convert incoming payload to StandardHookInput
+  const standardInput = toStandardInput(eventName, payload, platform);
+  const serializedInput = JSON.stringify(standardInput, null, 2);
+
   const baseProfilesDir = profilesDir();
   let overallExitCode = 0;
   let overallStderr = '';
@@ -180,7 +313,10 @@ export async function runDispatch(
         if (file.startsWith('.')) continue;
         const hookPath = path.join(hooksDir, file);
 
-        const {exitCode, stdout, stderr} = await executeHook(hookPath, payload);
+        const {exitCode, stdout, stderr} = await executeHook(
+          hookPath,
+          serializedInput,
+        );
         overallStderr += stderr;
 
         if (stdout.trim()) {
@@ -205,104 +341,69 @@ export async function runDispatch(
     }
   }
 
-  let finalStdout = plainStdout;
+  let finalStdout = '';
 
-  if (jsonResults.length > 0) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const merged: any = {};
+  if (jsonResults.length > 0 || plainStdout.trim()) {
+    const mergedOutput: StandardHookOutput = {};
 
     for (const res of jsonResults) {
-      // Merge decision/permissionDecision (deny/block take precedence)
-      if (res.decision === 'deny' || res.decision === 'block') {
-        merged.decision = 'deny';
-      } else if (res.decision && !merged.decision) {
-        merged.decision = res.decision;
+      // Map potential legacy properties into standard properties
+      const output: StandardHookOutput = {
+        decision:
+          res.decision ||
+          (res.hookSpecificOutput &&
+            res.hookSpecificOutput.permissionDecision) ||
+          res.permissionDecision,
+        reason:
+          res.reason ||
+          (res.hookSpecificOutput &&
+            (res.hookSpecificOutput.permissionDecisionReason ||
+              res.hookSpecificOutput.reason)),
+        additionalContext:
+          res.additionalContext ||
+          (res.hookSpecificOutput && res.hookSpecificOutput.additionalContext),
+        suppressOutput: res.suppressOutput,
+      };
+
+      // Merge decision
+      if (output.decision === 'deny') {
+        mergedOutput.decision = 'deny';
+      } else if (output.decision && !mergedOutput.decision) {
+        mergedOutput.decision = output.decision;
       }
 
-      if (
-        res.permissionDecision === 'deny' ||
-        res.permissionDecision === 'block'
-      ) {
-        merged.permissionDecision = 'deny';
-      } else if (res.permissionDecision && !merged.permissionDecision) {
-        merged.permissionDecision = res.permissionDecision;
+      // Merge reason
+      if (output.reason) {
+        mergedOutput.reason = mergedOutput.reason
+          ? `${mergedOutput.reason}\n${output.reason}`
+          : output.reason;
       }
 
-      // Concatenate reasons
-      if (res.reason) {
-        merged.reason = merged.reason
-          ? `${merged.reason}\n${res.reason}`
-          : res.reason;
-      }
-
-      // Merge hookSpecificOutput
-      if (res.hookSpecificOutput) {
-        if (!merged.hookSpecificOutput) merged.hookSpecificOutput = {};
-        if (res.hookSpecificOutput.additionalContext) {
-          merged.hookSpecificOutput.additionalContext = merged
-            .hookSpecificOutput.additionalContext
-            ? `${merged.hookSpecificOutput.additionalContext}\n${res.hookSpecificOutput.additionalContext}`
-            : res.hookSpecificOutput.additionalContext;
-        }
+      // Merge additionalContext
+      if (output.additionalContext) {
+        mergedOutput.additionalContext = mergedOutput.additionalContext
+          ? `${mergedOutput.additionalContext}\n${output.additionalContext}`
+          : output.additionalContext;
       }
 
       // Merge suppressOutput
-      if (res.suppressOutput === true) {
-        merged.suppressOutput = true;
-      }
-
-      // Add other fields (shallow merge)
-      for (const key in res) {
-        if (
-          ![
-            'decision',
-            'permissionDecision',
-            'reason',
-            'hookSpecificOutput',
-            'suppressOutput',
-          ].includes(key)
-        ) {
-          merged[key] = res[key];
-        }
+      if (output.suppressOutput === true) {
+        mergedOutput.suppressOutput = true;
       }
     }
 
-    // If we have plain stdout AND merged JSON, and we are on Gemini,
-    // we should probably put plain stdout into additionalContext or systemMessage
-    if (platform === 'gemini') {
-      if (plainStdout) {
-        if (!merged.hookSpecificOutput) merged.hookSpecificOutput = {};
-        merged.hookSpecificOutput.additionalContext = merged.hookSpecificOutput
-          .additionalContext
-          ? `${plainStdout}\n${merged.hookSpecificOutput.additionalContext}`
-          : plainStdout;
-      }
-      if (Object.keys(merged).length > 0 || jsonResults.length > 0) {
-        finalStdout = JSON.stringify(merged, null, 2);
-      }
-    } else {
-      // Claude Code
-      if (eventName === 'SessionStart' || eventName === 'UserPromptSubmit') {
-        // These events in Claude Code prefer plain text for injection
-        if (Object.keys(merged).length > 0) {
-          // If we have JSON context, extract it
-          const context =
-            merged.additionalContext ||
-            (merged.hookSpecificOutput &&
-              merged.hookSpecificOutput.additionalContext);
-          finalStdout = `${plainStdout}${context ? `\n${context}` : ''}`;
-        } else {
-          finalStdout = plainStdout;
-        }
-      } else {
-        // Other events (PreToolUse, TaskCompleted) expect JSON if there's any structured decision
-        if (Object.keys(merged).length > 0 || jsonResults.length > 0) {
-          finalStdout = JSON.stringify(merged, null, 2);
-        } else {
-          finalStdout = plainStdout;
-        }
-      }
+    if (plainStdout.trim()) {
+      mergedOutput.additionalContext = mergedOutput.additionalContext
+        ? `${plainStdout.trim()}\n${mergedOutput.additionalContext}`
+        : plainStdout.trim();
     }
+
+    const finalResult = toAgentOutput(
+      mergedOutput,
+      platform,
+      standardInput.rawEventName,
+    );
+    finalStdout = JSON.stringify(finalResult, null, 2);
   }
 
   return {

@@ -337,18 +337,51 @@ program
         ) {
           platform = 'gemini';
         } else {
-          // Fallback: look for local config dirs
-          const fs = await import('fs/promises');
+          // Check payload content for Claude or Gemini specific markers
           try {
-            await fs.access('.gemini');
-            platform = 'gemini';
+            const data = JSON.parse(payload);
+            const rawEvent = data.hook_event_name || data.hookEventName;
+            if (rawEvent) {
+              if (
+                rawEvent.startsWith('SessionStart:') ||
+                rawEvent === 'PreToolUse' ||
+                rawEvent === 'TaskCompleted' ||
+                rawEvent === 'UserPromptSubmit'
+              ) {
+                platform = 'claude';
+              }
+            }
           } catch {
+            // Ignore
+          }
+
+          // Fallback based on event name
+          if (!platform) {
+            if (
+              event === 'PreToolUse' ||
+              event === 'TaskCompleted' ||
+              event === 'UserPromptSubmit'
+            ) {
+              platform = 'claude';
+            } else if (event === 'BeforeTool' || event === 'AfterTool') {
+              platform = 'gemini';
+            }
+          }
+
+          // Local config directory checks (prefer .claude check)
+          if (!platform) {
+            const fs = await import('fs/promises');
             try {
               await fs.access('.claude');
               platform = 'claude';
             } catch {
-              // Final fallback
-              platform = 'claude';
+              try {
+                await fs.access('.gemini');
+                platform = 'gemini';
+              } catch {
+                // Final fallback
+                platform = 'claude';
+              }
             }
           }
         }

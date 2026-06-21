@@ -19,7 +19,7 @@ function main() {
     if (!payload) return;
 
     const data = JSON.parse(payload);
-    const tool = data.tool_name || data.tool || data.call?.tool || data.name;
+    const tool = data.toolCall?.name;
 
     // Skip reminder for read-only tools to reduce aggression
     if (tool && READ_ONLY_TOOLS.includes(tool)) {
@@ -27,8 +27,11 @@ function main() {
     }
 
     // Also skip if it's a shell command that looks like a read command
-    if (tool === 'run_shell_command') {
-      const cmd = data.tool_input?.command || data.arguments?.command || '';
+    if (tool === 'run_shell_command' || tool === 'run_command') {
+      const cmd =
+        data.toolCall?.arguments?.command ||
+        data.toolCall?.arguments?.CommandLine ||
+        '';
       if (READ_ONLY_TOOLS.some(t => cmd.trim().startsWith(t))) {
         process.exit(0);
       }
@@ -39,16 +42,10 @@ function main() {
     const reminder =
       "CRITICAL: Did you make any technical decisions or discover reusable patterns during this task? If so, you MUST document them now using the 'brain' command before proceeding.";
 
-    // Check if we are running in Gemini CLI or Claude Code via environment variables or other hints
-    // But since runDispatch will handle merging, we can just output a JSON that works for both or let runDispatch adapt it.
     process.stdout.write(
       JSON.stringify({
-        hookSpecificOutput: {
-          additionalContext: reminder,
-        },
-        suppressOutput: true,
-        // For Claude Code compatibility if it ever starts using JSON for TaskCompleted context
         additionalContext: reminder,
+        suppressOutput: true,
       }) + '\n',
     );
   } catch {

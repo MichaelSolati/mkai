@@ -15,10 +15,8 @@ function main() {
   try {
     const data = JSON.parse(payload);
 
-    // Claude Code payload structure for PreToolUse
-    const tool = data.tool_name || data.tool || data.call?.tool || data.name;
-    const args =
-      data.tool_input || data.arguments || data.call?.arguments || data.args;
+    const tool = data.toolCall?.name;
+    const args = data.toolCall?.arguments;
 
     // Check if the agent is trying to read/write/grep native memory or CLAUDE.md/GEMINI.md
     // We also include the project-specific memory path used by Claude Code and Gemini CLI
@@ -48,15 +46,13 @@ function main() {
     if (isMemoryCall) {
       console.log(
         JSON.stringify({
-          decision: 'deny', // 'deny' is preferred in Gemini CLI, 'block' works in Claude
-          permissionDecision: 'deny', // For Claude Code JSON protocol
+          decision: 'deny',
           reason:
             'Native memory is disabled. You MUST use the obsidian skill for persistent memory. Run `python3 ~/.claude/skills/obsidian/scripts/obsidian.py brain` to save, or `... search` to find context.',
           suppressOutput: true,
         }),
       );
       // Exit with 0 so the CLI parses the JSON decision correctly.
-      // Claude Code also handles JSON on stdout with exit 0 for PreToolUse.
       process.exit(0);
     }
   } catch {
