@@ -10,6 +10,7 @@ All obsidian operations are delegated to obsidian.py via subprocess.
 """
 
 import argparse
+import ast
 import json
 import os
 import re
@@ -190,15 +191,27 @@ def _parse_list_output(raw: str) -> list[str]:
                     name = name[:-3]
                 items.append(name)
         except (json.JSONDecodeError, AttributeError):
-            pass
+            try:
+                parsed = ast.literal_eval(raw)
+                files = parsed.get("files", [])
+                for f in files:
+                    name = f.strip().rstrip("/")
+                    if name.endswith(".md"):
+                        name = name[:-3]
+                    items.append(name)
+            except (ValueError, SyntaxError, AttributeError):
+                pass
     return [i for i in items if i]
 
 
 def _parse_frontmatter(content: str) -> dict:
     """Extract YAML frontmatter from a markdown string."""
     content = content.strip()
-    if not content.startswith("---"):
+    # Obsidian.py read prepends a header line — find the first --- delimiter
+    start = content.find("---")
+    if start == -1:
         return {}
+    content = content[start:]
     end = content.find("\n---", 3)
     if end == -1:
         return {}

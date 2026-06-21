@@ -5,6 +5,8 @@ import {removeDispatcher} from './hooks/manager';
 import {restoreOriginal, stashSkillConfig} from './stash';
 import {readState, removeActivation} from './state';
 import {isSymlink, removeSymlink} from './symlink';
+import {findProfile} from './profile';
+import {removeProfilePermissions} from './permissions';
 import type {Target} from './types';
 
 export interface DeactivateResult {
@@ -86,6 +88,11 @@ export async function deactivateProfile(
     target.kind === 'project' ? target.projectPath : undefined,
   );
   await removeDispatcher(targetDir, target.platform);
+
+  const profile = await findProfile(profileName);
+  if (profile) {
+    await removeProfilePermissions(profile, target);
+  }
 
   return result;
 }

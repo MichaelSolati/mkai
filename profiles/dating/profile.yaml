@@ -13,3 +13,9 @@ requires:
   - obsidian
   - writing
 conflicts: []
+
+permissions:
+  skills:
+    - match-tracker
+  scripts:
+    - skills/match-tracker/scripts/match_tracker.py

@@ -7,6 +7,7 @@ import {injectDispatcher} from './hooks/manager';
 import {restoreSkillConfig, stashOriginal} from './stash';
 import {addActivation, readState} from './state';
 import {createSymlink, removeSymlink} from './symlink';
+import {addProfilePermissions} from './permissions';
 import type {Activation, Conflict, LinkRecord, Profile, Target} from './types';
 
 export interface ActivateOptions {
@@ -201,6 +202,7 @@ export async function activateProfile(
     };
     await addActivation(activation);
     await injectDispatcher(targetDir, profile, target.platform);
+    await addProfilePermissions(profile, target);
   }
 
   return result;

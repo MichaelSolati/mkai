@@ -21,3 +21,9 @@ hooks:
 
 requires: []
 conflicts: []
+
+permissions:
+  skills:
+    - obsidian
+  scripts:
+    - skills/obsidian/scripts/obsidian.py

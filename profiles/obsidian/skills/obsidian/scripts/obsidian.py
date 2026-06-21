@@ -81,8 +81,8 @@ def _normalize_vault_path(path: str, kind: Literal["note", "folder", "auto"] = "
         if seg == "..": raise SystemExit(f"Path traversal not allowed: {path!r}")
 
     if enforce_slug:
-        # Enforce slug convention: lowercase and hyphens for spaces/underscores
-        segments = [s.lower().replace(" ", "-").replace("_", "-") for s in path.split("/") if s]
+        # Enforce slug convention: lowercase, spaces to hyphens (underscores preserved)
+        segments = [s.lower().replace(" ", "-") for s in path.split("/") if s]
         path = "/".join(segments)
     else:
         # Just clean up empty segments without changing case

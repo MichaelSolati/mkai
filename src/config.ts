@@ -6,7 +6,7 @@ import type {Platform} from './types';
 
 const HOME = os.homedir();
 
-function pkgRoot(): string {
+export function pkgRoot(): string {
   const thisFile = fileURLToPath(import.meta.url);
   return path.resolve(path.dirname(thisFile), '..');
 }

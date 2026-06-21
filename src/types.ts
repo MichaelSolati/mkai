@@ -10,6 +10,10 @@ export interface ProfileYaml {
   hooks: string[];
   requires: string[];
   conflicts: string[];
+  permissions?: {
+    skills?: string[];
+    scripts?: string[];
+  };
 }
 
 export interface Profile extends ProfileYaml {
